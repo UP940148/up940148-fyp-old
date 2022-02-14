@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../lib/fontawesome-free-5.13.0-web/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Radiosity Visualization</title>
+</head>
+<body>
+    <div id="menu">
+        <div class="menu-item" id="env-button">
+            <i class="fas fa-cube" aria-hidden="true" title="select an environment"></i>
+            <div class="window" id="env">
+                <h2>Environments</h2>
+            </div>
+        </div>
+        <div class="menu-item" id="stats-button">
+            <i class="fas fa-eye" aria-hidden="true" title="statistics"></i>
+            <div class="window" id="stats">
+                <h2>Rendering statistics</h2>
+                <div>----------</div>
+                <div data-stat="instance-count" >Number of Instances: <span class="stat-target">☕</span></div>
+                <div data-stat="surface-count"  >Number of Surfaces:  <span class="stat-target">☕</span></div>
+                <div data-stat="patch-count"    >Number of Patches:   <span class="stat-target">☕</span></div>
+                <div data-stat="element-count"  >Number of Elements:  <span class="stat-target">☕</span></div>
+                <div data-stat="vertex-count"   >Number of Vertices:  <span class="stat-target">☕</span></div>
+                <div>----------</div>
+                <div data-stat="iteration-count">Iterations:   <span class="stat-target">☕</span></div>
+                <div data-stat="current-step"   >Current step: <span class="stat-target">☕</span></div>
+            </div>
+        </div>
+        <div class="menu-item" id="settings-button">
+            <i class="fas fa-sliders-h" aria-hidden="true" title="settings"></i>
+            <div class="window" id="settings">
+              <h2>Radiosity algorithms</h2>
+              <div id="algorithms">
+              </div>
+              <div id="ambient" class="toggle-container"></div>
+              <div id="global" class="toggle-container"></div>
+              <h2>Settings</h2>
+              <div id="speed-slider" class="slider-container"></div>
+              <div id="output-view" class="toggle-container"></div>
+              <div id="wireframe" class="toggle-container"></div>
+              <div id="gamma-slider" class="slider-container"></div>
+              <div id="exposure-slider" class="slider-container"></div>
+            </div>
+        </div>
+        <div class="menu-item" id="controls-button">
+            <i class="fas fa-keyboard" aria-hidden="true" title="controls"></i>
+            <div class="window" id="controls">
+              <h2>Keyboard commands</h2>
+            </div>
+        </div>
+        <div class="menu-item" id="camera-toggle">
+            <i class="fas fa-dove" aria-hidden="true" title="Toggle flight camera"></i>
+        </div>
+    </div>
+
+    <script type="module" src="./index.js"></script>
+</body>
+</html>

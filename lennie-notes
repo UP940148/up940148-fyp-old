@@ -1,0 +1,12 @@
+Create a camera object
+Create a camera helper (?)
+Make camera object move on sine wave around point (0, 0, 0)
+Add toggle for orbital cam versus flight cam
+Figure out way to define flight path (Maybe MatLab can help)
+    - A-Level maths, don't fail me now
+Lighting?
+    - Panels projecting light?
+    - Panel that follows the camera and projects light
+        - Would make pre-rendering near impossible as light couldn't be calculated in advance, would depend on camera position at the time
+    - Static panels projecting light, but have the camera reset position upon pressing play
+        - Setting the camera to match the current time is proving moderately tricky

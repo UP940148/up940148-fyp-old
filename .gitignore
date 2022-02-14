@@ -1,1 +1,4 @@
-/notes.txt
+coverage/
+node_modules/
+eslint-config-portsoc/
+.vscode

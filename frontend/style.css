@@ -1,0 +1,315 @@
+:root {
+  --bg: #2d3436;
+  --bga: #2d3436e0;
+  --fg: white;
+}
+
+html, body {
+  background-color: var(--bg);
+  color: var(--fg);
+  overflow: hidden;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+/* Radiosity menu */
+#menu {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+
+  border: solid 2px var(--fg);
+
+  font-family: 'Consolas', monospace;
+}
+
+#menu h2,
+#menu h3 {
+  font-size: 1em;
+}
+
+#menu h2 {
+  text-decoration: underline;
+  margin-bottom: .5em;
+  margin-top: .5em;
+}
+
+#menu h2:first-child {
+  margin-top: 0;
+}
+
+.menu-item {
+  position: relative;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.menu-item:hover,
+.menu-item.selected {
+  border-color: var(--bg);
+}
+
+/* Images */
+.menu-item img,
+.menu-item > i {
+  font-size: 1.5em;
+  display: block;
+  padding: 0.5rem;
+  color: var(--bg);
+  text-align: center;
+}
+
+/* Windows */
+.window {
+  position: absolute;
+  left: 150%; /* for compatibility if calc doesn't work */
+  left: calc(100% + 1em + 4px); /* 1em from the right of the menu, incl. borders */
+  top: -2px; /* to align with the border */
+
+  border: solid 2px var(--fg);
+  background-color: var(--bga);
+
+  padding: 0.5em;
+
+  min-width: 30em;
+  cursor: default; /* menu items are clickable, .windows aren't */
+}
+
+.menu-item:first-child .window {
+  top: -4px; /* to align with both borders */
+}
+
+.menu-item:not(.selected) .window {
+  display: none !important;
+}
+
+.option.selected {
+  font-weight: bold;
+}
+
+.option.selected:after {
+  content: ' ◄';
+  display: inline;
+}
+
+/* menu button colors */
+#menu > :nth-child(1) { background-color: #75c9c8; }
+#menu > :nth-child(2) { background-color: #9CB6DD; }
+#menu > :nth-child(3) { background-color: #c0b9dd; }
+#menu > :nth-child(4) { background-color: #ded9e2; }
+#menu > :nth-child(5) { background-color: #f7f4ea; }
+
+#settings {
+  min-width: 25em;
+}
+
+.slider-container {
+  display: block;
+  margin-top: .5em;
+  margin-bottom: .5em;
+}
+
+.slider-container:last-child {
+  margin-bottom: 0;
+}
+
+.slider-container label .label {
+  display: inline-block;
+  margin-right: 1em;
+  text-transform: capitalize;
+  min-width: 10ch;
+}
+
+.slider-container input {
+  cursor: pointer;
+}
+
+.slider-container .value {
+  display: inline-block;
+  min-width: 6ch;
+  text-align: right;
+  margin-left: 1ch;
+  margin-right: 1ch;
+}
+
+.slider-container .reset {
+  /* icon, by default too big */
+  font-size: 80%;
+  cursor: pointer;
+}
+
+.slider-container .default .reset {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.toggle-container {
+  display: block;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.toggle-container:last-child {
+  margin-bottom: 0;
+}
+
+.toggle-container label .label {
+  display: inline-block;
+  margin-right: 1em;
+  text-transform: capitalize;
+  min-width: 10ch;
+}
+
+.explanation {
+  padding-left: 1em;
+  font-style: italic;
+}
+
+
+#delay {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+#env > div {
+  cursor: pointer;
+}
+
+#delay > div {
+  cursor: pointer;
+}
+
+#ambient, #overshoot, #wireframe {
+  cursor: pointer;
+}
+
+/* Axes view */
+.axes-frame {
+  position: absolute;
+  bottom: 3em;
+  left: 1em;
+
+  height: 8em;
+  width: 8em;
+
+  /* labels */
+  font-family: 'Arial Black', sans-serif;
+  font-weight: bold;
+}
+
+/* let clicks pass through the axes view */
+.axes-frame,
+.axes-frame * {
+  pointer-events: none;
+}
+
+#controls {
+  box-sizing: border-box;
+  width: calc(100vw - 5.5em - 8px);
+
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 1em;
+}
+
+#controls h2 {
+  grid-column: 1 / span 2;
+}
+
+#settings {
+  box-sizing: border-box;
+  width: auto;
+  width: calc(100vw - 5.5em - 8px);
+}
+
+.animation-controls {
+  position: fixed;
+  left: 0.5em;
+  right: 0.5em;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 2rem;
+  padding-top: 0.2em;
+
+  --val-fraction: 0;
+  --buf-fraction: 0;
+}
+
+.animation-controls.hidden {
+  display: none;
+}
+
+.animation-controls-progress {
+  position: relative;
+  height: 0.2em;
+  min-height: 2px;
+  transition: transform 0.3s;
+  background-color: #fff3;
+  border-radius: 0.1em;
+  overflow: hidden;
+}
+
+.animation-controls:hover .animation-controls-progress {
+  transform: translateY(-50%) scaleY(2);
+  transition-delay: 0.4s;
+}
+
+.animation-controls-progress-bar {
+  position: absolute;
+  background-color: #f00;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(var(--val-fraction, 0));
+  transform-origin: left;
+  pointer-events: none; /* allow clicks to go right to the parent */
+}
+
+.animation-controls-buffer-bar {
+  position: absolute;
+  background-color: #fff8;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(var(--buf-fraction, 0));
+  transform-origin: left;
+  pointer-events: none; /* allow clicks to go right to the parent */
+}
+
+.animation-controls-buttons {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-areas: 'left center right';
+  height: 1.2em;
+  align-items: center;
+}
+
+.animation-controls-center {
+  grid-area: center;
+}
+
+.animation-controls-side   {
+  grid-area: right;
+  margin-left: auto;
+}
+
+.animation-controls-buttons * {
+  font-size: .9em;
+}
+
+.animation-controls-buttons i {
+  display: inline-block;
+  width: 1.5em;
+  text-align: center;
+}
+
+.animation-controls-buttons i:not(.disabled):hover {
+  text-shadow: #08f 0 0 .5em;
+}
+
+.animation-controls-buttons i.off {
+  opacity: 0.5;
+}

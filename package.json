@@ -1,0 +1,42 @@
+{
+  "name": "slow-light-radiosity",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "dependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-portsoc": "^0.6.0",
+    "three": "^0.115.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "babel-jest": "^25.2.6",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^26.0.1"
+  },
+  "scripts": {
+    "test": "npm run lint && jest",
+    "lint": "eslint .",
+    "coverage": "jest --coverage --collect-coverage-from={modeling,radiosity,test}/**/*.js"
+  },
+  "jest": {
+    "verbose": false,
+    "testRegex": "./test/.*\\.(js|jsx)$"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/portsoc/Slow-light-Radiosity.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/portsoc/Slow-light-Radiosity/issues"
+  },
+  "homepage": "https://github.com/portsoc/Slow-light-Radiosity#readme"
+}
