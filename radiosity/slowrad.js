@@ -63,23 +63,26 @@ export default class SlowRad {
 
     const shoot = new Spectra();
 
-    for (const currentPatch of this.env.patches) {
+    for (const currentPatch of this.env.patches) { // For every patch in scene
       // calculate form factors
       const rffArray = currentPatch.rffArray;
 
-      for (const surface of this.env.surfaces) {
+      for (const surface of this.env.surfaces) { // For every surface in scene
         // Get surface reflectance
         const reflect = surface.reflectance;
 
-        for (const patch of surface.patches) {
+        for (const patch of surface.patches) { // For every patch of the current surface
           // ignore self patch
           if (patch !== currentPatch) {
-            for (const element of patch.elements) {
+            for (const element of patch.elements) { // For every element of the current surface patch
               // Check element visibility
               if (rffArray[element.number] > 0) {
                 // compute when the element would receive the light
                 const receivingTime = this.now + currentPatch.distArray[element.number];
 
+                if (!element.parentPatch.parentSurface.isAlive(receivingTime)) {
+                  continue;
+                }
                 // only propagate the light if we aren't out of future buffer
                 if (receivingTime < this.maxTime) {
                   // get reciprocal form factor
@@ -194,6 +197,7 @@ export default class SlowRad {
   * prepGenerator() {
     // calculate distances and form factors
     const max = this.env.patchCount;
+    //console.log(max);
     let curr = 0;
     yield { curr, max };
 
@@ -205,6 +209,7 @@ export default class SlowRad {
     }
 
     while (!this.calculate()) {
+      //console.log(max);
       yield { curr: this.now, max: this.maxTime };
     }
   }

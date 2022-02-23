@@ -22,8 +22,9 @@ export function open(env) {
 
   stats.set('iteration-count', '?');
 
-  const alg = algorithms.value.instance;
-  bufferingIterator = alg.open(env);
+  const alg = algorithms.value.instance; // Gets the type of radiosity (SlowRad/ProgRad1/ProgRad2)
+  bufferingIterator = alg.open(env); // Env is current environment object
+  // BufferingIterator is generator created from env object
 
   animationControls.setMaxTime(alg.maxTime);
   animationControls.reset();
@@ -50,6 +51,7 @@ async function startBuffering() {
 
     let next = bufferingIterator.next();
     while (!next.done) {
+      //console.log(next);
       updateBufTime(next.value);
 
       await burstingDelay();

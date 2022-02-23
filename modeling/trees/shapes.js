@@ -19,7 +19,7 @@ export function hollowSphereAttractionPoints(n = 100, r = 5, center = new Point(
 export function hollowHalfSphereAttractionPoints(n = 100, r = 5, center = new Point(0, 0, 6), hollowing = 0) {
   const retval = [];
   while (retval.length < n) {
-    const p = center.plus(P(rand0(r), rand0(r), rand(r)));
+    const p = center.plus(P(rand0(r * 0.5), rand0(r * 0.5), rand(r)));
     const dist = p.dist(center);
     const allowedDist = typeof hollowing === 'function' ? hollowing() : hollowing;
     if (dist <= r && allowedDist < dist / r) retval.push(p);

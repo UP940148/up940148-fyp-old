@@ -7,6 +7,7 @@ import * as Modeling from '../modeling/index.js';
 
 import * as axes from './tools/axes.js';
 import * as components from './tools/basic-components.js';
+import * as stats from './tools/stats.js';
 
 export const viewParameters = {
   // the current view is either vertex (radiosity) or shaded
@@ -223,7 +224,8 @@ function animate() {
   requestAnimationFrame(animate);
 
   if (!scene) return; // nothing to show
-  r += 0.01;
+  let currentStep = parseInt(stats.get('current-step'));
+  r = 0.01 * currentStep;
   flightCam.position.x = Math.cos(r) * 6;
   flightCam.position.z = Math.sin(r) * 6;
   flightCam.position.y = 4;//Math.sin(r) * 2;

@@ -16,23 +16,21 @@ import modelTest from '../modeling/test-models/testSTL.js';
 // list of available environments; the first one is the default
 
 const environmentsList = [
-    //{
-    //    f: modelTest,
-    //    name: 'Model Test',
-    //},
-    {
-        f: lenniesRoom2,
-        name: 'Main Scene',
-    },
-    {
-        f: treeScene,
-        name: 'Tree',
-    },
-    {
-        f: lenniesRoom,
-        name: 'Lennie',
-    },
-]/*,
+  {
+    f: lenniesRoom2,
+    name: 'Main Scene',
+  },
+  {
+    f: treeScene,
+    name: 'Tree',
+  },
+  {
+    f: lenniesRoom,
+    name: 'Lennie',
+  },
+];
+/*
+,
   {
     f: envRoom1,
     name: 'Simple room',
@@ -65,8 +63,7 @@ const environmentsList = [
     f: () => createMaze(8),
     name: 'Same maze but subdivided (very slow!)',
   },
-];
-*/
+];*/
 export const selector = new components.Selector('environment', environmentsList);
 
 async function createEnvironment() {

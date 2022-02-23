@@ -228,13 +228,15 @@ html, body {
 
 .animation-controls {
   position: fixed;
-  left: 0.5em;
-  right: 0.5em;
+  left: 0em;
+  right: 0em;
   bottom: 0;
   display: flex;
   flex-direction: column;
   font-size: 2rem;
-  padding-top: 0.2em;
+  /*padding-top: 0.2em;*/
+  padding: 0.2em 0.5em 0em 0.5em;
+  background-color: rgba(0,0,0,.25);
 
   --val-fraction: 0;
   --buf-fraction: 0;
@@ -251,6 +253,7 @@ html, body {
   transition: transform 0.3s;
   background-color: #fff3;
   border-radius: 0.1em;
+  border: .5px solid #888;
   overflow: hidden;
 }
 
