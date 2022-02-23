@@ -36,12 +36,12 @@ const cubeLightReflectance = [
     new Rad.Spectra(0,0,0),
 ]
 const cubeLightEmittance = [
-    new Rad.Spectra(.9,.9,.9),
-    new Rad.Spectra(.9,.9,.9),
-    new Rad.Spectra(.9,.9,.9),
-    new Rad.Spectra(.9,.9,.9),
-    new Rad.Spectra(.9,.9,.9),
-    new Rad.Spectra(.9,.9,.9),
+    new Rad.Spectra(1, 1, 1),
+    new Rad.Spectra(1, 1, 1),
+    new Rad.Spectra(1, 1, 1),
+    new Rad.Spectra(1, 1, 1),
+    new Rad.Spectra(1, 1, 1),
+    new Rad.Spectra(1, 1, 1),
 ]
 
 // Create a room with a light
@@ -58,7 +58,6 @@ export default async function createScene() {
   floorxForm.scale(50, 50, 50);
   floorxForm.translate(-25, -25, 0);
   floorxForm.transform(floor);
-  setAliveTime(floor, [[0, 25], [50, 100]]);
 
   // Plane light facing down
   const light1 = makePlane(planeLightReflectance, planeLightEmittance);
@@ -67,11 +66,18 @@ export default async function createScene() {
   l1x.translate(0, 0, 5);
   l1x.rotate(45, 0, 0);
   l1x.transform(light1);
-  console.log(light1);
+
+  const box1 = makeCube();
+  const b1x = new Transform3();
+  b1x.scale(20, 1, 10);
+  b1x.translate(-10, 5, 0);
+  b1x.transform(box1);
+  setAliveTime(box1, [0, 0]);
+
 
 
   // Return environment with scene objects
-  return new Rad.Environment([floor, light1]);
+  return new Rad.Environment([floor, light1, box1]);
 }
 
 function setAliveTime(subject, time) {
