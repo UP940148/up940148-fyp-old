@@ -9,7 +9,7 @@ export default class HemiCube {
     this.scanner = new HemiScan(resolution);
   }
 
-  calculateFormFactors(originPatch, env, ffArray, currTime) {
+  calculateFormFactors(originPatch, env, ffArray) {
     // Set the hemi-cube view transformations matrix
     this.clipper.setView(originPatch);
 
@@ -29,9 +29,13 @@ export default class HemiCube {
       this.scanner.initBuffer();
 
       for (const patch of env.patches) {
+        // If patch is part of light source, ignore
+        if (patch.parentSurface._emittance.maxColor !== 0) {
+          continue;
+        }
         // Determine patch visibility
         const visible = !this.clipper.isFacingAway(patch);
-        if (patch !== originPatch && visible && patch.parentSurface.isAlive(currTime)) {
+        if (patch !== originPatch && visible) {
           for (const element of patch.elements) {
             // Clip element to face view volume
             this.clipper.clip(element, this.out);

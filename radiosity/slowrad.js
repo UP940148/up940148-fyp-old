@@ -121,10 +121,10 @@ export default class SlowRad {
 
   // calculate reciprocal form factors or return existing ones if already there
   computeRFFArray(patch) {
-    // if (patch.rffArray) return patch.rffArray;
+    if (patch.rffArray) return patch.rffArray;
 
     const rffArray = patch.rffArray = new Array(this.env.elementCount);
-    this.ffd.calculateFormFactors(patch, this.env, rffArray, this.now);
+    this.ffd.calculateFormFactors(patch, this.env, rffArray);
 
     // compute reciprocal form factors
     for (const element of this.env.elements) {
@@ -197,7 +197,6 @@ export default class SlowRad {
   * prepGenerator() {
     // calculate distances and form factors
     const max = this.env.patchCount;
-    console.log(max);
     let curr = 0;
     yield { curr, max };
 
@@ -209,14 +208,6 @@ export default class SlowRad {
     }
 
     while (!this.calculate()) {
-      //console.log(max);
-      /*
-        This loop, for a scene with one light, one single surface floor, and a single cube
-        Increased the time taken to load from ~1.14 seconds to ~31.49 seconds
-      */
-      for (const currentPatch of this.env.patches) {
-        this.computeRFFArray(currentPatch);
-      }
       yield { curr: this.now, max: this.maxTime };
     }
   }

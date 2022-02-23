@@ -67,7 +67,16 @@ export default async function createScene() {
   l1x.rotate(45, 0, 0);
   l1x.transform(light1);
 
-  const box1 = makeCube();
+  const customEmit = [
+      new Rad.Spectra(0.0001, 0.0001, 0.0001),
+      new Rad.Spectra(0.0001, 0.0001, 0.0001),
+      new Rad.Spectra(0.0001, 0.0001, 0.0001),
+      new Rad.Spectra(0.0001, 0.0001, 0.0001),
+      new Rad.Spectra(0.0001, 0.0001, 0.0001),
+      new Rad.Spectra(0.0001, 0.0001, 0.0001),
+  ]
+
+  const box1 = makeCube()//defaultCubeReflectance, customEmit);
   const b1x = new Transform3();
   b1x.scale(20, 1, 10);
   b1x.translate(-10, 5, 0);
