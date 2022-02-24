@@ -81,6 +81,7 @@ export default class SlowRad {
                 const receivingTime = this.now + currentPatch.distArray[element.number];
 
                 if (!element.parentPatch.parentSurface.isAlive(receivingTime)) {
+                  // console.log(element);
                   continue;
                 }
                 // only propagate the light if we aren't out of future buffer

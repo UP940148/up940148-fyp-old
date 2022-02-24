@@ -2,8 +2,9 @@ import Point3 from './point3.js';
 import Spectra from './spectra.js';
 
 export default class Environment {
-  constructor(instances) {
+  constructor(instances, maxTime) {
     this.instances = instances;
+    this.maxTime = maxTime;
     this.elementsNumbered = null;
   }
 

@@ -1,5 +1,6 @@
 
 import { loadSTL } from '../stl-loader.js';
+import { flightPath } from '../path.js';
 import * as Rad from '../../radiosity/index.js';
 import Transform3 from '../transform3.js';
 import * as Cube from '../cube.js';
@@ -67,6 +68,7 @@ export default async function createScene() {
   l1x.rotate(45, 0, 0);
   l1x.transform(light1);
 
+  /*
   const customEmit = [
       new Rad.Spectra(0.0001, 0.0001, 0.0001),
       new Rad.Spectra(0.0001, 0.0001, 0.0001),
@@ -74,24 +76,52 @@ export default async function createScene() {
       new Rad.Spectra(0.0001, 0.0001, 0.0001),
       new Rad.Spectra(0.0001, 0.0001, 0.0001),
       new Rad.Spectra(0.0001, 0.0001, 0.0001),
-  ]
+  ];
+  */
 
-  const box1 = makeCube()//defaultCubeReflectance, customEmit);
+  const box1 = makeCube(); // defaultCubeReflectance, customEmit);
   const b1x = new Transform3();
-  b1x.scale(20, 1, 10);
-  b1x.translate(-10, 5, 0);
+  b1x.scale(2, 2, 2);
+  b1x.translate(-1, -1, 0);
   b1x.transform(box1);
-  setAliveTime(box1, [0, 0]);
+  setAliveTime(box1, [0, 30]);
+
+
+  const objects = [floor, box1];
+
+  // Create circle of lights
+  const numLights = 25;
+  const timeDiff = 1000 / 25;
+  for (let i = 0; i < numLights; i++) {
+    const obj = makePlane(planeLightReflectance, planeLightEmittance);
+    const transform = new Transform3();
+    transform.scale(1, -1, 1);
+    transform.translate(-.5, -.5, 5);
+    const rotateZ = i * (360 / numLights); // Set position around unit circle
+    transform.rotate(45, 0, rotateZ);
+    //transform.translate(0, 0, 5);
+    transform.transform(obj);
+    // Set each light to be alive in sequence
+    setAliveTime(obj, [i * timeDiff, i * timeDiff + timeDiff]);
+    makeLight(obj);
+    objects.push(obj);
+  }
 
 
 
   // Return environment with scene objects
-  return new Rad.Environment([floor, light1, box1]);
+  return new Rad.Environment(objects);
 }
 
 function setAliveTime(subject, time) {
   for (const surface of subject.surfaces) {
     surface.aliveTime = time;
+  }
+}
+
+function makeLight(subject) {
+  for (const surface of subject.surfaces) {
+    surface.isLight = true;
   }
 }
 

@@ -1,5 +1,6 @@
 import * as THREE from '../lib/three.module.js';
 import { OrbitControls } from '../lib/OrbitControls.js';
+import { flightPath } from '../modeling/path.js';
 
 import * as Rad from '../radiosity/index.js';
 import * as Modeling from '../modeling/index.js';
@@ -30,8 +31,8 @@ let scene;
 let controls;
 let material;
 let geometry;
-let r = 0;
-let camToggle = document.getElementById('camera-toggle');
+let t = 0;
+const camToggle = document.getElementById('camera-toggle');
 
 let environment;
 
@@ -111,6 +112,10 @@ export function showEnvironment(theEnvironment) {
 
     // * Read faces
     for (const surface of instance.surfaces) {
+      // If current surface is a light source, skip
+      if (surface.isLight) {
+        continue;
+      }
       for (const patch of surface.patches) {
         for (const element of patch.elements) {
           addFace(geometry, element, [0, 1, 2]);
@@ -190,6 +195,11 @@ export function updateColors() {
   const surfaceColor = new Rad.Spectra();
 
   for (const surface of environment.surfaces) {
+    // If current surface is a light source, skip
+    if (surface.isLight) {
+      continue;
+    }
+    
     if (deltaAmbient) {
       deltaAmbient.setTo(environment.ambient);
       deltaAmbient.multiply(surface.reflectance);
@@ -216,25 +226,40 @@ export function updateColors() {
       }
     }
   }
-
   geometry.colorsNeedUpdate = true;
 }
 
 function animate() {
   requestAnimationFrame(animate);
-
   if (!scene) return; // nothing to show
-  let currentStep = parseInt(stats.get('current-step'));
-  r = 0.01 * currentStep;
-  flightCam.position.x = Math.cos(r) * 6;
-  flightCam.position.z = Math.sin(r) * 6;
-  flightCam.position.y = 4;//Math.sin(r) * 2;
-  flightCam.lookAt(0,2,0);
+
+  const currentStep = parseInt(stats.get('current-step'));
+  // Make t value relative to max value, this will create a smooth loop
+  t = 0.01 * currentStep;
+  // flightCam.position.x = Math.cos(t*2) * 6;
+  // flightCam.position.z = Math.sin(t*2) * 6;
+  // flightCam.position.y = 5 + Math.sin(t * 2) * 2;
+
+  let [x, z, y] = flightPath(t * 2);
+  x = x * 6;
+  z = z * 6;
+  y = 5 + y * 2;
+  flightCam.position.x = x;
+  flightCam.position.y = y;
+  flightCam.position.z = z;
+
+  const lookAtX = Math.cos(2*(t + 1)) * 6;
+  const lookAtZ = Math.sin(2*(t + 1)) * 6;
+  flightCam.lookAt(lookAtX, 2, lookAtZ);
+
+  // Hide faces that aren't currently alive
+  //console.log(scene);
+  //window.alert();
+
   if (camToggle.dataset.enabled) {
     renderer.render(scene, flightCam);
     axes.update(flightCam, new THREE.Vector3());
-  }
-  else {
+  } else {
     renderer.render(scene, camera);
     axes.update(camera, controls.target);
   }
@@ -242,7 +267,7 @@ function animate() {
 }
 
 export function resetFlight() {
-    r = 0;
+    t = 0;
 }
 
 export function getCameraPosition() {
