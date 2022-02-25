@@ -30,7 +30,7 @@ export default class HemiCube {
 
       for (const patch of env.patches) {
         // If patch is part of light source, ignore
-        if (patch.parentSurface._emittance.maxColor !== 0) {
+        if (patch.parentSurface.isLight) {
           continue;
         }
         // Determine patch visibility

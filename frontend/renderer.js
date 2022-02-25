@@ -199,7 +199,7 @@ export function updateColors() {
     if (surface.isLight) {
       continue;
     }
-    
+
     if (deltaAmbient) {
       deltaAmbient.setTo(environment.ambient);
       deltaAmbient.multiply(surface.reflectance);
@@ -235,22 +235,15 @@ function animate() {
 
   const currentStep = parseInt(stats.get('current-step'));
   // Make t value relative to max value, this will create a smooth loop
-  t = 0.01 * currentStep;
-  // flightCam.position.x = Math.cos(t*2) * 6;
-  // flightCam.position.z = Math.sin(t*2) * 6;
-  // flightCam.position.y = 5 + Math.sin(t * 2) * 2;
 
-  let [x, z, y] = flightPath(t * 2);
-  x = x * 6;
-  z = z * 6;
-  y = 5 + y * 2;
+
+  const [x, z, y] = flightPath(currentStep);
   flightCam.position.x = x;
   flightCam.position.y = y;
   flightCam.position.z = z;
 
-  const lookAtX = Math.cos(2*(t + 1)) * 6;
-  const lookAtZ = Math.sin(2*(t + 1)) * 6;
-  flightCam.lookAt(lookAtX, 2, lookAtZ);
+  const [lookX, lookZ, lookY] = flightPath(currentStep + 1)
+  flightCam.lookAt(lookX, lookY, lookZ);
 
   // Hide faces that aren't currently alive
   //console.log(scene);

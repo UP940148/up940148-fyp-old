@@ -79,11 +79,6 @@ export default class SlowRad {
               if (rffArray[element.number] > 0) {
                 // compute when the element would receive the light
                 const receivingTime = this.now + currentPatch.distArray[element.number];
-
-                if (!element.parentPatch.parentSurface.isAlive(receivingTime)) {
-                  // console.log(element);
-                  continue;
-                }
                 // only propagate the light if we aren't out of future buffer
                 if (receivingTime < this.maxTime) {
                   // get reciprocal form factor
@@ -166,6 +161,11 @@ export default class SlowRad {
 
   initExitance() {
     for (const surface of this.env.surfaces) {
+      // Get emitting time for this surface
+      const activeTime = surface.activeTime;
+      if (!activeTime) {
+        continue
+      }
       // Get surface emittance
       const emit = surface.emittance;
 
@@ -173,7 +173,7 @@ export default class SlowRad {
         // Initialize patch future exitances
         // set the lights to flash at the beginning
         patch.futureExitances.forEach((s, i) => {
-          if (i < 10) {
+          if (activeTime[0] < i && i < activeTime[1]) {
             s.setTo(emit);
           } else {
             s.reset();
