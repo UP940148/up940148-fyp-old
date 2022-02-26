@@ -12,13 +12,13 @@ import { algorithms } from './algorithms.js';
 
 window.addEventListener('load', init);
 
-let camToggle = document.getElementById('camera-toggle');
-camToggle.addEventListener('click', (e) => {
-    if (camToggle.dataset.enabled) {
-        camToggle.removeAttribute('data-enabled');
-    } else {
-        camToggle.setAttribute('data-enabled', true);
-    }
+const camToggle = document.getElementById('camera-toggle');
+camToggle.addEventListener('click', () => {
+  if (camToggle.dataset.enabled) {
+    camToggle.removeAttribute('data-enabled');
+  } else {
+    camToggle.setAttribute('data-enabled', true);
+  }
 })
 
 function init() {

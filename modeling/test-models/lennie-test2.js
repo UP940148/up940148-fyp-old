@@ -10,7 +10,7 @@ import * as Cylinder from '../cylinder.js';
 const defaultReflectance = new Rad.Spectra(1, 1, 1);
 const defaultEmittance = new Rad.Spectra(0, 0, 0);
 const planeLightReflectance = new Rad.Spectra(0, 0, 0);
-const planeLightEmittance = new Rad.Spectra(1, 1, 1);
+const planeLightEmittance = new Rad.Spectra(100, 100, 100);
 
 const defaultCubeReflectance = [
   defaultReflectance,
@@ -37,17 +37,23 @@ const cubeLightReflectance = [
   new Rad.Spectra(0, 0, 0),
 ]
 const cubeLightEmittance = [
-  new Rad.Spectra(100, 100, 100),
-  new Rad.Spectra(100, 100, 100),
-  new Rad.Spectra(100, 100, 100),
-  new Rad.Spectra(100, 100, 100),
-  new Rad.Spectra(100, 100, 100),
-  new Rad.Spectra(100, 100, 100),
+  new Rad.Spectra(255, 255, 255),
+  new Rad.Spectra(255, 255, 255),
+  new Rad.Spectra(255, 255, 255),
+  new Rad.Spectra(255, 255, 255),
+  new Rad.Spectra(255, 255, 255),
+  new Rad.Spectra(255, 255, 255),
 ]
 
 // Create a room with a light
 export default async function createScene() {
   /*
+    Co-ordinates in relation to environment:
+    this.x = env.x
+    this.y = env.y
+    this.z = env.z
+
+
         MATRIX TRANSFORMATION ORDER (SRT):
         1) Scale
         2) Rotate
@@ -57,7 +63,7 @@ export default async function createScene() {
   const floor = makePlane(defaultReflectance, defaultEmittance, 32);
   const floorxForm = new Transform3();
   floorxForm.translate(-0.5, -0.5, 0);
-  floorxForm.scale(50, 50, 50);
+  floorxForm.scale(100, 100, 1);
   floorxForm.transform(floor);
 
   // Plane light facing down
@@ -67,6 +73,7 @@ export default async function createScene() {
   l1x.translate(0, 0, 5);
   l1x.rotate(45, 0, 0);
   l1x.transform(light1);
+  setActiveTime(light1, [0, 1000]);
 
   /*
   const customEmit = [
@@ -77,27 +84,56 @@ export default async function createScene() {
       new Rad.Spectra(0.0001, 0.0001, 0.0001),
       new Rad.Spectra(0.0001, 0.0001, 0.0001),
   ];
+
+  const rainbow = [
+    new Rad.Spectra(183, 18, 52), // Front
+    new Rad.Spectra(255, 88, 0), // Back
+    new Rad.Spectra(0, 155, 72), // Right
+    new Rad.Spectra(0, 70, 173), // Left
+    new Rad.Spectra(255, 255, 255), // Top
+    new Rad.Spectra(255, 213, 0), // Bottom
+  ]
   */
 
   const box1 = makeCube(); // defaultCubeReflectance, customEmit);
   const b1x = new Transform3();
+  b1x.translate(-0.5, -0.5, 0);
   b1x.scale(2, 2, 2);
-  b1x.translate(-1, -1, 0);
   b1x.transform(box1);
-  // setAliveTime(box1, [0, 30]);
-
 
   const objects = [floor, box1];
 
+  for (let i = 0; i < 3; i++) {
+    const obj1 = makeCube();
+    const obj2 = makeCube();
+    const [x, y, z] = flightPath(1000 / 3 * i);
+    const tx1 = new Transform3();
+    const tx2 = new Transform3();
+
+    tx1.scale(1, 1, 7);
+    tx2.scale(1, 1, 8);
+
+    tx1.translate(3 * x / 4, 3 * y / 4, 0);
+    tx2.translate(5 * x / 4, 5 * y / 4, 0);
+
+    tx1.transform(obj1);
+    tx2.transform(obj2);
+
+    objects.push(obj1);
+    objects.push(obj2);
+  }
+
+
+
   // Create circle of lights
-  const numLights = 100;
+  const numLights = 5;
   const timeDiff = 1000 / numLights;
   for (let i = 0; i < numLights; i++) {
     const obj = makeCube(cubeLightReflectance, cubeLightEmittance);
     const transform = new Transform3();
     // Center on 0, 0
     transform.translate(-0.5, -0.5, -0.5);
-    transform.scale(0.1, 0.1, 0.1)
+    transform.scale(0.2, 0.2, 0.2)
     // const rotateZ = i * (360 / numLights); // Set position around unit circle
     const [x, y, z] = flightPath(i * timeDiff);
     // transform.rotate(45, 0, rotateZ);
@@ -105,10 +141,11 @@ export default async function createScene() {
     transform.translate(x, y, z);
     transform.transform(obj);
     // Set each light to be alive in sequence
-    // makeLight(obj);
-    setActiveTime(obj, [i * timeDiff, i * timeDiff + timeDiff + 1]);
+    makeLight(obj);
+    setActiveTime(obj, [i * timeDiff, i * timeDiff + 10]);
     objects.push(obj);
   }
+
 
 
 

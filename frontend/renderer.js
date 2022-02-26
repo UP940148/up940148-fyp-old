@@ -233,18 +233,18 @@ function animate() {
   requestAnimationFrame(animate);
   if (!scene) return; // nothing to show
 
-  const currentStep = parseInt(stats.get('current-step'));
+  const currentStep = parseInt(stats.get('current-step')) - 1;
   // Make t value relative to max value, this will create a smooth loop
 
 
-  const [x, z, y] = flightPath(currentStep);
+  const [x, y, z] = flightPath(currentStep);
   flightCam.position.x = x;
-  flightCam.position.y = y;
-  flightCam.position.z = z;
+  flightCam.position.y = z;
+  flightCam.position.z = -y;
 
-  const [lookX, lookZ, lookY] = flightPath(currentStep + 1)
-  flightCam.lookAt(lookX, lookY, lookZ);
-
+  const [lookX, lookY, lookZ] = flightPath(currentStep + 2)
+  //flightCam.lookAt(lookX, lookY, lookZ);
+  flightCam.lookAt(lookX, lookZ, -lookY);
   // Hide faces that aren't currently alive
   //console.log(scene);
   //window.alert();
@@ -260,7 +260,7 @@ function animate() {
 }
 
 export function resetFlight() {
-    t = 0;
+  t = 0;
 }
 
 export function getCameraPosition() {
