@@ -145,7 +145,7 @@ export default async function createScene() {
     transform.translate(x, y, z);
     transform.transform(obj);
     // Set each light to be alive in sequence
-    //makeLight(obj);
+    makeLight(obj);
     setActiveTime(obj, [i * timeDiff, i * timeDiff + 10]);
     objects.push(obj);
   }

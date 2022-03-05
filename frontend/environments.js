@@ -21,14 +21,11 @@ import test2 from '../modeling/test-models/unit-tests/camera-test.js';
 // list of available environments; the first one is the default
 
 const environmentsList = [
-  {
-    f: test2,
-    name: 'TEST: Camera path',
-  },
-  {
-    f: mainScene,
-    name: 'Main Scene',
-  },
+
+  // {
+  //   f: mainScene,
+  //   name: 'Main Scene',
+  // },
   {
     f: lenniesRoom2,
     name: 'Testing Scene',
@@ -36,7 +33,11 @@ const environmentsList = [
   {
     f: test1,
     name: 'TEST: Invisible light source',
-  }
+  },
+  {
+    f: test2,
+    name: 'TEST: Camera path',
+  },
 ];
 /*
 ,
