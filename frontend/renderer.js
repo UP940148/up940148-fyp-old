@@ -39,11 +39,15 @@ let environment;
 export function setup() {
   if (renderer) return; // already initialized
 
-  renderer = new THREE.WebGLRenderer();
+  renderer = new THREE.WebGLRenderer({
+    // Enabled so canvases can be saved as images
+    preserveDrawingBuffer: true,
+  });
   renderer.setPixelRatio(window.devicePixelRatio);
   document.body.append(renderer.domElement);
 
   camera = new THREE.PerspectiveCamera(100, 1, 0.1, 1000);
+  //camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 1, 1000 );
 
   // Create camera object for flight cam and camera helper
   flightCam = new THREE.PerspectiveCamera(84, window.innerWidth / window.innerHeight, 0.01, 1000);
@@ -236,7 +240,12 @@ function animate() {
   const currentStep = parseInt(stats.get('current-step')) - 1;
   // Make t value relative to max value, this will create a smooth loop
 
-
+  /*
+    ThreeJS co-ordinates:
+    x: x
+    y: z
+    z: -y
+  */
   const [x, y, z] = flightPath(currentStep);
   flightCam.position.x = x;
   flightCam.position.y = z;

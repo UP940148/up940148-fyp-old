@@ -11,6 +11,7 @@ const defaultReflectance = new Rad.Spectra(1, 1, 1);
 const defaultEmittance = new Rad.Spectra(0, 0, 0);
 const planeLightReflectance = new Rad.Spectra(0, 0, 0);
 const planeLightEmittance = new Rad.Spectra(100, 100, 100);
+const floorReflectance = new Rad.Spectra(0.01, 0.01, 0.01);
 
 const defaultCubeReflectance = [
   defaultReflectance,
@@ -60,7 +61,7 @@ export default async function createScene() {
         3) Translate
   */
   // Floor plane
-  const floor = makePlane(defaultReflectance, defaultEmittance, 32);
+  const floor = makePlane(floorReflectance, defaultEmittance, 32);
   const floorxForm = new Transform3();
   floorxForm.translate(-0.5, -0.5, 0);
   floorxForm.scale(100, 100, 1);
@@ -123,7 +124,10 @@ export default async function createScene() {
     objects.push(obj2);
   }
 
-
+/*
+  Skip STL
+  Ignore branches
+*/
 
   // Create circle of lights
   const numLights = 5;
@@ -141,7 +145,7 @@ export default async function createScene() {
     transform.translate(x, y, z);
     transform.transform(obj);
     // Set each light to be alive in sequence
-    makeLight(obj);
+    //makeLight(obj);
     setActiveTime(obj, [i * timeDiff, i * timeDiff + 10]);
     objects.push(obj);
   }

@@ -1,5 +1,5 @@
 :root {
-  /*--bg: #2d3436;*/
+  /*--bg: #2d3436*/;
   --bg: #000000;
   --bga: #2d3436e0;
   --fg: white;
@@ -97,11 +97,12 @@ html, body {
 }
 
 /* menu button colors */
-#menu > :nth-child(1) { background-color: #75c9c8; }
-#menu > :nth-child(2) { background-color: #9CB6DD; }
-#menu > :nth-child(3) { background-color: #c0b9dd; }
-#menu > :nth-child(4) { background-color: #ded9e2; }
-#menu > :nth-child(5) { background-color: #f7f4ea; }
+#menu > :nth-child(1) { background-color: #4aaca9; }
+#menu > :nth-child(2) { background-color: #75c9c8; }
+#menu > :nth-child(3) { background-color: #9CB6DD; }
+#menu > :nth-child(4) { background-color: #c0b9dd; }
+#menu > :nth-child(5) { background-color: #ded9e2; }
+#menu > :nth-child(6) { background-color: #f7f4ea; }
 
 #settings {
   min-width: 25em;

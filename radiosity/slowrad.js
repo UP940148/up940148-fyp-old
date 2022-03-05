@@ -173,7 +173,14 @@ export default class SlowRad {
         // Initialize patch future exitances
         // set the lights to flash at the beginning
         patch.futureExitances.forEach((s, i) => {
-          if (activeTime[0] <= i && i <= activeTime[1]) {
+          if (Array.isArray(activeTime[0])) {
+            // If entry is an array, then multiple activation ranges specified
+            for (const entry of activeTime) {
+              if (entry[0] <= i && i <= entry[1]) {
+                s.setTo(emit);
+              }
+            }
+          } else if (activeTime[0] <= i && i <= activeTime[1]) {
             s.setTo(emit);
           } else {
             s.reset();

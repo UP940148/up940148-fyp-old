@@ -13,21 +13,30 @@ import lenniesRoom2 from '../modeling/test-models/lennie-test2.js';
 import treeScene from '../modeling/test-models/tree-scene.js';
 import modelTest from '../modeling/test-models/testSTL.js';
 
+import mainScene from '../modeling/test-models/main-scene.js';
+
+import test1 from '../modeling/test-models/unit-tests/invisible-lights.js';
+import test2 from '../modeling/test-models/unit-tests/camera-test.js';
+
 // list of available environments; the first one is the default
 
 const environmentsList = [
   {
-    f: lenniesRoom2,
+    f: test2,
+    name: 'TEST: Camera path',
+  },
+  {
+    f: mainScene,
     name: 'Main Scene',
   },
   {
-    f: treeScene,
-    name: 'Tree',
+    f: lenniesRoom2,
+    name: 'Testing Scene',
   },
   {
-    f: lenniesRoom,
-    name: 'Lennie',
-  },
+    f: test1,
+    name: 'TEST: Invisible light source',
+  }
 ];
 /*
 ,

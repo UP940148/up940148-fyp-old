@@ -21,6 +21,22 @@ camToggle.addEventListener('click', () => {
   }
 })
 
+const takePic = document.getElementById('image-capture');
+takePic.addEventListener('click', () => {
+  // Get reference to canvas
+  const canv = document.querySelector('canvas');
+  // Create link element
+  const link = document.createElement('a');
+  link.download = `step${stats.get('current-step')}.png`;
+  // Convert canvas to image file
+  canv.toBlob((blob) => {
+    // Set link to access URL for image file
+    link.href = URL.createObjectURL(blob);
+    // Click link to download image
+    link.click();
+  }, 'image/png');
+})
+
 function init() {
   renderer.setup();
   setupUI();
