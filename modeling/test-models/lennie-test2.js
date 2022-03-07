@@ -7,7 +7,7 @@ import * as Cube from '../cube.js';
 import * as Plane from '../singleface.js';
 import * as Cylinder from '../cylinder.js';
 
-const defaultReflectance = new Rad.Spectra(1, 1, 1);
+const defaultReflectance = new Rad.Spectra(0.5, 0.5, 0.5);
 const defaultEmittance = new Rad.Spectra(0, 0, 0);
 const planeLightReflectance = new Rad.Spectra(0, 0, 0);
 const planeLightEmittance = new Rad.Spectra(100, 100, 100);
@@ -66,15 +66,6 @@ export default async function createScene() {
   floorxForm.translate(-0.5, -0.5, 0);
   floorxForm.scale(100, 100, 1);
   floorxForm.transform(floor);
-
-  // Plane light facing down
-  const light1 = makePlane(planeLightReflectance, planeLightEmittance);
-  const l1x = new Transform3();
-  l1x.scale(1, -1, 1);
-  l1x.translate(0, 0, 5);
-  l1x.rotate(45, 0, 0);
-  l1x.transform(light1);
-  setActiveTime(light1, [0, 1000]);
 
   /*
   const customEmit = [
@@ -146,7 +137,8 @@ export default async function createScene() {
     transform.transform(obj);
     // Set each light to be alive in sequence
     makeLight(obj);
-    setActiveTime(obj, [i * timeDiff, i * timeDiff + 10]);
+    const firstPulse = i * timeDiff;
+    setActiveTime(obj, [[firstPulse, firstPulse + 9], [firstPulse + 15, firstPulse + 24]]);
     objects.push(obj);
   }
 
