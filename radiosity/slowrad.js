@@ -18,9 +18,10 @@ export default class SlowRad {
     this.env = env;
 
     if (speedOfLight == null) {
-      const bounds = this.env.boundingBox;
-      const diagonal = bounds[0].dist(bounds[1]);
-      this.speedOfLight = diagonal * 4 / this.maxTime;
+      // const bounds = this.env.boundingBox;
+      // const diagonal = bounds[0].dist(bounds[1]);
+      // this.speedOfLight = diagonal * 4 / this.maxTime;
+      this.speedOfLight = 5.66428005; // The approximate speed of sound
     } else {
       this.speedOfLight = speedOfLight;
     }
