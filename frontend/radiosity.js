@@ -56,7 +56,6 @@ async function startBuffering() {
 
     let next = bufferingIterator.next();
     while (!next.done) {
-      //console.log(next);
       updateBufTime(next.value);
 
       await burstingDelay();
@@ -65,6 +64,7 @@ async function startBuffering() {
       next = bufferingIterator.next();
     }
   } finally {
+    console.log(performance.now());
     bufferingIterator = null;
     bufferingRunning = false;
   }

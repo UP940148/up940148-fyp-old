@@ -9,7 +9,8 @@ This is the main script, it does three things:
 Additionally, a bit of statistics is output into stderr.
 */
 
-import * as output from './scad-output.js';
+// import * as output from './scad-output.js';
+import * as output from './js-output.js';
 import * as trees from './tree-generator.js';
 import * as shapes from './shapes.js';
 import { P } from './point.js';
@@ -36,7 +37,7 @@ function main() {
   });
 
   const leaves = trees.selectLeaves(tree);
-  console.log(output.toString(tree, leaves));
+  console.log(output.toJSON(tree, leaves));
 }
 
 main();

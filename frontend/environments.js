@@ -18,6 +18,8 @@ import mainScene from '../modeling/test-models/main-scene.js';
 import test1 from '../modeling/test-models/unit-tests/invisible-lights.js';
 import test2 from '../modeling/test-models/unit-tests/camera-test.js';
 
+import tree from '../modeling/test-models/tree-room.js'
+
 // list of available environments; the first one is the default
 
 const environmentsList = [
@@ -26,6 +28,10 @@ const environmentsList = [
   //   f: mainScene,
   //   name: 'Main Scene',
   // },
+  {
+    f: tree,
+    name: 'Tree',
+  },
   {
     f: lenniesRoom2,
     name: 'Testing Scene',

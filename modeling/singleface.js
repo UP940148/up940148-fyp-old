@@ -22,3 +22,20 @@ export function singleFace(reflectance, emittance, subdivide = [1, 1]) {
 
   return new Rad.Instance([surface]);
 }
+
+
+export function triangle(reflectance, emittance, subdivide = [1, 1]) {
+  const p = [
+    new Rad.Point3(0, -0.5, 0),
+    new Rad.Point3(1, 0, 0),
+    new Rad.Point3(0, 0.5, 0),
+  ];
+
+  const v = p.map(p => new Rad.Vertex3(p));
+
+  const patch = new Rad.Patch3(v, sub.quadElements(v, subdivide));
+
+  const surface = new Rad.Surface3(reflectance, emittance, [patch]);
+
+  return new Rad.Instance([surface]);
+}

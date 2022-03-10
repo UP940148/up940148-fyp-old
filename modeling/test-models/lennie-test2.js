@@ -6,6 +6,7 @@ import Transform3 from '../transform3.js';
 import * as Cube from '../cube.js';
 import * as Plane from '../singleface.js';
 import * as Cylinder from '../cylinder.js';
+import * as TreeLoader from '../json-tree-loader.js';
 
 const defaultReflectance = new Rad.Spectra(0.5, 0.5, 0.5);
 const defaultEmittance = new Rad.Spectra(0, 0, 0);
@@ -48,6 +49,12 @@ const cubeLightEmittance = [
 
 // Create a room with a light
 export default async function createScene() {
+  const tree1 = await TreeLoader.load('../modeling/trees/tree.json');
+  const treexForm = new Transform3();
+  treexForm.scale(0.08, 0.08, 0.08);
+  treexForm.translate(0, 22, 0);
+  treexForm.transform(tree1);
+
   /*
     Co-ordinates in relation to environment:
     this.x = env.x
@@ -66,6 +73,7 @@ export default async function createScene() {
   floorxForm.translate(-0.5, -0.5, 0);
   floorxForm.scale(100, 100, 1);
   floorxForm.transform(floor);
+
 
   /*
   const customEmit = [
@@ -93,7 +101,7 @@ export default async function createScene() {
   b1x.scale(2, 2, 2);
   b1x.transform(box1);
 
-  const objects = [floor, box1];
+  const objects = [floor, tree1];
 
   for (let i = 0; i < 3; i++) {
     const obj1 = makeCube();
