@@ -15,8 +15,10 @@ export default class Vertex3 {
   get normal() {
     if (this._normal == null) {
       this._normal = new Vector3(0, 0, 0);
-      for (const e of this.elements) {
-        this._normal.add(e.normal);
+      let e = 0;
+      while (e < this.elements.length) {
+        this._normal.add(this.elements[e].normal);
+        e++;
       }
       this._normal.normalize();
     }
