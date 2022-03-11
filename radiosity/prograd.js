@@ -58,18 +58,21 @@ export default class ProgRad extends RadEqnSolve {
 
     const shoot = new Spectra();
 
-    for (const surface of this.env.surfaces) {
+    let s = 0;
+    while (s < this.env.surfaces.length) {
       // Get surface reflectance
-      const reflect = surface.reflectance;
+      const reflect = this.env.surfaces[s].reflectance;
 
-      for (const patch of surface.patches) {
+      let p = 0;
+      while (p < this.env.surfaces[s].patches.length) {
         // ignore self patch
-        if (patch !== this.max) {
-          for (const element of patch.elements) {
+        if (this.env.surfaces[s].patches[p] !== this.max) {
+          let e = 0;
+          while (e < this.env.surfaces[s].patches[p].elements.length) {
             // Check element visibility
-            if (ffArray[element.number] > 0) {
+            if (ffArray[this.env.surfaces[s].patches[p].elements[e].number] > 0) {
               // Compute reciprocal form factor
-              const rff = Math.min(ffArray[element.number] * this.max.area / element.area, 1);
+              const rff = Math.min(ffArray[this.env.surfaces[s].patches[p].elements[e].number] * this.max.area / this.env.surfaces[s].patches[p].elements[e].area, 1);
 
               // Get shooting patch unsent exitance
               shoot.setTo(this.max.exitance);
@@ -81,15 +84,18 @@ export default class ProgRad extends RadEqnSolve {
               shoot.multiply(reflect);
 
               // Update element exitance
-              element.exitance.add(shoot);
+              this.env.surfaces[s].patches[p].elements[e].exitance.add(shoot);
 
               // Update patch unsent exitance
-              shoot.scale(element.area / patch.area);
-              patch.exitance.add(shoot);
+              shoot.scale(this.env.surfaces[s].patches[p].elements[e].area / this.env.surfaces[s].patches[p].area);
+              this.env.surfaces[s].patches[p].exitance.add(shoot);
             }
+            e++;
           }
         }
+        p++;
       }
+      s++;
     }
 
     // Reset unsent exitance to zero
@@ -111,24 +117,28 @@ export default class ProgRad extends RadEqnSolve {
     this.overshoot.reset();
     const unsent = new Spectra();
 
-    for (const patch of this.env.patches) {
+    let p = 0;
+    while (p < this.env.patches.length) {
       // ignore self patch
-      if (patch !== this.max) {
-        for (const element of patch.elements) {
+      if (this.env.patches[p] !== this.max) {
+        let e = 0;
+        while (e < this.env.patches[p].elements) {
           // Get unsent exitance
-          unsent.setTo(patch.exitance);
+          unsent.setTo(this.env.patches[p].exitance);
           // Ensure unsent exitance is positive in each color band
           if (unsent.r < 0) unsent.r = 0;
           if (unsent.g < 0) unsent.g = 0;
           if (unsent.b < 0) unsent.b = 0;
 
           // Multiply unsent exitance by patch-to-element form factor
-          unsent.scale(ffArray[element.number]);
+          unsent.scale(ffArray[this.env.patches[p].elements[e].number]);
 
           // Update overshooting paramters
           this.overshoot.add(unsent);
+          e++;
         }
       }
+      p++;
     }
 
     // Get shooting patch reflectance
@@ -170,15 +180,17 @@ export default class ProgRad extends RadEqnSolve {
     let curr = 0;
     yield { curr, max };
 
-    for (const patch of this.env.patches) {
+    let p = 0;
+    while (p < this.env.patches.length) {
       curr += 1;
 
-      if (!patch.ffArray) {
-        patch.ffArray = new Array(this.env.elementCount);
-        this.ffd.calculateFormFactors(patch, this.env, patch.ffArray);
+      if (!this.env.patches[p].ffArray) {
+        this.env.patches[p].ffArray = new Array(this.env.elementCount);
+        this.ffd.calculateFormFactors(this.env.patches[p], this.env, this.env.patches[p].ffArray);
 
         yield { curr, max };
       }
+      p++;
     }
 
     yield { curr: max, max };
