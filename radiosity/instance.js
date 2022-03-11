@@ -7,13 +7,19 @@ export default class Instance {
   get vertices() {
     if (this._vertices == null) {
       const set = new Set();
-      for (const s of this.surfaces) {
-        for (const p of s.patches) {
-          addToSet(p.vertices, set);
-          for (const e of p.elements) {
-            addToSet(e.vertices, set);
+      let s = 0;
+      while (s < this.surfaces.length) {
+        let p = 0;
+        while (p < this.surfaces[s].patches.length) {
+          addToSet(this.surfaces[s].patches[p].vertices, set);
+          let e = 0;
+          while (e < this.surfaces[s].patches[p].elements.length) {
+            addToSet(this.surfaces[s].patches[p].elements[e].vertices, set);
+            e++;
           }
+          p++;
         }
+        s++;
       }
       this._vertices = Array.from(set);
     }
@@ -23,5 +29,9 @@ export default class Instance {
 }
 
 function addToSet(arr, set) {
-  for (const x of arr) set.add(x);
+  let x = 0;
+  while (x < arr.length) {
+    set.add(arr[x]);
+    x++;
+  }
 }
