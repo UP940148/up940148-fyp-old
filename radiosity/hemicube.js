@@ -22,8 +22,7 @@ export default class HemiCube {
     // Project environment onto each hemi-cube face
     // we project the whole environment on each side in turn,
     // adding the contributions in ffArray
-    let f = 0;
-    while (f < FACES.length) {
+    for (let f = 0; f < FACES.length; f++) {
       // Update view transformation matrix
       this.clipper.updateView(FACES[f]);
       // Clear depth uffer
@@ -37,19 +36,16 @@ export default class HemiCube {
         // Determine patch visibility
         const visible = !this.clipper.isFacingAway(patch);
         if (patch !== originPatch && visible) {
-          let e = 0;
-          while (e < patch.elements.length) {
+          for (let e = 0; e < patch.elements.length; e++) {
             // Clip element to face view volume
             this.clipper.clip(patch.elements[e], this.out);
 
             // Draw the clipped polygon on the hemicube face
             this.scanner.scan(this.out, patch.elements[e].number);
-            e++;
           }
         }
       }
       this.scanner.sumDeltas(ffArray, FACES[f]);
-      f++;
     }
     return this;
   }

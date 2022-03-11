@@ -8,10 +8,8 @@ export default class Surface3 {
     this.aliveTime = aliveTime;       // Time that the surface exists in the scene
 
     // set parent surface of the given patches
-    let p = 0;
-    while (p < patches.length) {
+    for (let p = 0; p < patches.length; p++) {
       patches[p].parentSurface = this;
-      p++;
     }
   }
 
@@ -33,13 +31,11 @@ export default class Surface3 {
 
     if (Array.isArray(this.aliveTime[0])) {
       // If first element is array, then aliveTime is list of tuples
-      let pr = 0;
-      while (pr < this.aliveTime.length) {
+      for (let pr = 0; pr < this.aliveTime.length; pr++) {
         // If current time falls in any given range, return true
         if (this.aliveTime[pr][0] <= currTime && currTime <= this.aliveTime[pr][1]) {
           return true;
         }
-        pr++;
       }
       return false;
     }

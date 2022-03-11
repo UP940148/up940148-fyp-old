@@ -74,12 +74,10 @@ export default class SlowRad {
         // Get surface reflectance
         const reflect = surface.reflectance;
 
-        let p = 0;
-        while (p < surface.patches.length) { // For every patch of the current surface
+        for (let p = 0; p < surface.patches.length; p++) { // For every patch of the current surface
           // ignore self patch
           if (surface.patches[p] !== currentPatch) {
-            let e = 0;
-            while (e < surface.patches[p].elements.length) { // For every element of the current surface patch
+            for (let e = 0; e < surface.patches[p].elements.length; e++) { // For every element of the current surface patch
               // Check element visibility
               if (rffArray[surface.patches[p].elements[e].number] > 0) {
                 // compute when the element would receive the light
@@ -103,10 +101,8 @@ export default class SlowRad {
                   surface.patches[p].futureExitances[receivingTime].add(shoot);
                 }
               }
-              e++;
             }
           }
-          p++;
         }
       }
 
@@ -150,10 +146,8 @@ export default class SlowRad {
     for (const patch of this.env.patches) {
       // ignore self patch
       if (patch !== currentPatch) {
-        let e = 0;
-        while (e < patch.elements.length) {
+        for (let e = 0; e < patch.elements.length; e++) {
           distArray[patch.elements[e].number] = this.getTimeDist(currentPatch.center, patch.elements[e].center);
-          e++;
         }
       }
     }
@@ -180,19 +174,16 @@ export default class SlowRad {
       // Get surface emittance
       const emit = surface.emittance;
 
-      let p = 0;
-      while (p < surface.patches.length) {
+      for (let p = 0; p < surface.patches.length; p++) {
         // Initialize patch future exitances
         // set the lights to flash at the beginning
         surface.patches[p].futureExitances.forEach((s, i) => {
           if (Array.isArray(activeTime[0])) {
             // If entry is an array, then multiple activation ranges specified
-            let e = 0;
-            while (e < activeTime.length) {
+            for (let e = 0; e < activeTime.length; e++) {
               if (activeTime[e][0] <= i && i <= activeTime[e][1]) {
                 s.setTo(emit);
               }
-              e++;
             }
           } else if (activeTime[0] <= i && i <= activeTime[1]) {
             s.setTo(emit);
@@ -202,25 +193,16 @@ export default class SlowRad {
         });
 
         // Initialize element and vertex future exitances
-        let e = 0;
-        while (e < surface.patches[p].elements.length) {
-          let fe = 0;
-          while (fe < surface.patches[p].elements[e].futureExitances.length) {
+        for (let e = 0; e < surface.patches[p].elements.length; e++) {
+          for (let fe = 0; fe < surface.patches[p].elements[e].futureExitances.length; fe++) {
             surface.patches[p].elements[e].futureExitances[fe].setTo(surface.patches[p].futureExitances[fe]);
-            fe++;
           }
-          let v = 0;
-          while (v < surface.patches[p].elements[e].vertices.length) {
-            let fe = 0;
-            while (fe < surface.patches[p].elements[e].vertices[v].futureExitances.length) {
+          for (let v = 0; v < surface.patches[p].elements[e].vertices.length; v++) {
+            for (let fe = 0; fe < surface.patches[p].elements[e].vertices[v].futureExitances.length; fe++) {
               surface.patches[p].elements[e].vertices[v].futureExitances[fe].reset();
-              fe++;
             }
-            v++;
           }
-          e++;
         }
-        p++;
       }
     }
 

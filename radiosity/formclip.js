@@ -21,11 +21,9 @@ export default class FormClip {
 
   clip(elem, out) {
     out.reset();
-    let v = 0;
-    while (v < elem.vertices.length) {
+    for (let v = 0; v < elem.vertices.length; v++) {
       this.hv.setToProjection(elem.vertices[v].pos, this.transMatrix);
       this.clipper.clip(this.hv, out);
-      v++
     }
     this.clipper.close(out);
     return out.numVert;
