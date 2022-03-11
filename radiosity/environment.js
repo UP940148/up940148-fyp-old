@@ -50,14 +50,14 @@ export default class Environment {
   numberElements() {
     if (this.elementsNumbered != null) return this.elementsNumbered;
 
-    let elementsNumbered = 0;
-    for (const element of this.elements) {
-      element.number = elementsNumbered;
-      elementsNumbered++;
+    const elements = this.elements;
+    let e;
+    for (e = 0; e < elements.length; e++) {
+      elements[e].number = e;
     }
 
-    this.elementsNumbered = elementsNumbered;
-    return elementsNumbered;
+    this.elementsNumbered = e;
+    return e;
   }
 
   * _vertexIterator() {
@@ -183,12 +183,12 @@ export default class Environment {
   }
 
   checkNoVerticesAreShared() {
-    for (const instance of this.instances) {
-      for (let s = 0; s < instance.surfaces.length; s++) {
-        for (let p = 0; p < instance.surfaces[s].patches.length; p++) {
-          if (!allVerticesBelongToSurface(instance.surfaces[s].patches[p].vertices, instance.surfaces[s])) return false;
-          for (let e = 0; e < instance.surfaces[s].patches[p].elements.length; e++) {
-            if (!allVerticesBelongToSurface(instance.surfaces[s].patches[p].elements[e].vertices, instance.surfaces[s])) return false;
+    for (let i = 0; i < this.instances.length; i++) {
+      for (let s = 0; s < this.instances[i].surfaces.length; s++) {
+        for (let p = 0; p < this.instances[i].surfaces[s].patches.length; p++) {
+          if (!allVerticesBelongToSurface(this.instances[i].surfaces[s].patches[p].vertices, this.instances[i].surfaces[s])) return false;
+          for (let e = 0; e < this.instances[i].surfaces[s].patches[p].elements.length; e++) {
+            if (!allVerticesBelongToSurface(this.instances[i].surfaces[s].patches[p].elements[e].vertices, this.instances[i].surfaces[s])) return false;
           }
         }
       }
@@ -198,43 +198,45 @@ export default class Environment {
 
   // interpolate vertex reflected exitances from their surrounding elements
   interpolateVertexExitances(now) {
+    const vertices = this.vertices;
     if (now === undefined) {
       // everything has one .exitance
-      for (const vertex of this.vertices) {
-        vertex.exitance.reset();
-
-        for (let e = 0; e < vertex.elements.length; e++) {
-          vertex.exitance.add(vertex.elements[e].exitance);
+      for (let v = 0; v < vertices.length; v++) {
+        vertices[v].exitance.reset();
+        let e;
+        for (e = 0; e < vertices[v].elements.length; e++) {
+          vertices[v].exitance.add(vertices[v].elements[e].exitance);
         }
-        vertex.exitance.scale(1 / vertex.elements.length);
+        vertices[v].exitance.scale(1 / e);
       }
     } else {
       // we deal with .futureExitances
-      for (const vertex of this.vertices) {
+      for (let v = 0; v < vertices.length; v++) {
         // don't interpolate past the size of futureExitances
-        if (now >= vertex.futureExitances.length) return;
+        if (now >= vertices[v].futureExitances.length) return;
 
-        vertex.futureExitances[now].reset();
-
-        for (let e = 0; e < vertex.elements.length; e++) {
-          vertex.futureExitances[now].add(vertex.elements[e].futureExitances[now]);
+        vertices[v].futureExitances[now].reset();
+        let e;
+        for (e = 0; e < vertices[v].elements.length; e++) {
+          vertices[v].futureExitances[now].add(vertices[v].elements[e].futureExitances[now]);
         }
-        vertex.futureExitances[now].scale(1 / vertex.elements.length);
+        vertices[v].futureExitances[now].scale(1 / e);
       }
     }
   }
 
   initializeFutureExitances(length) {
-    // Can't change these loops as they're looping through a generator
-    // Must look into other loop possibilities
-    for (const patch of this.patches) {
-      initializeObjectFutureExitances(patch, length);
+    const patches = this.patches;
+    for (let p = 0; p < patches.length; p++) {
+      initializeObjectFutureExitances(patches[p], length);
     }
-    for (const element of this.elements) {
-      initializeObjectFutureExitances(element, length);
+    const elements = this.elements;
+    for (let e = 0; e < elements.length; e++) {
+      initializeObjectFutureExitances(elements[e], length);
     }
-    for (const vertex of this.vertices) {
-      initializeObjectFutureExitances(vertex, length);
+    const vertices = this.vertices;
+    for (let v = 0; v < vertices.length; v++) {
+      initializeObjectFutureExitances(vertices[v], length);
     }
   }
 }
