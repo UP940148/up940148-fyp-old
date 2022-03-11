@@ -37,11 +37,7 @@ export default class Environment {
     let i = 0;
     while (i < this.instances.length) {
       let v = 0;
-<<<<<<< HEAD
       while (v < this.instances[i].vertices.length) {
-=======
-      while (v < this.instances[i].vertices) {
->>>>>>> 4bb6d482ae42fb2823c1df4c4a9ce71013fdfaf9
         minX = Math.min(minX, this.instances[i].vertices[v].pos.x);
         minY = Math.min(minY, this.instances[i].vertices[v].pos.y);
         minZ = Math.min(minZ, this.instances[i].vertices[v].pos.z);
