@@ -29,12 +29,12 @@ const environmentsList = [
   //   name: 'Main Scene',
   // },
   {
-    f: tree,
-    name: 'Tree',
-  },
-  {
     f: lenniesRoom2,
     name: 'Testing Scene',
+  },
+  {
+    f: tree,
+    name: 'Tree',
   },
   {
     f: test1,
