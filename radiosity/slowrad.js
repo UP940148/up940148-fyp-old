@@ -45,9 +45,10 @@ export default class SlowRad {
       this.needsDisplayUpdate = false;
 
       // set vertex colors to their colors from the given time
-      for (const vertex of this.env.vertices) {
-        const camDist = camPos ? this.getTimeDist(vertex.pos, camPos) : 0;
-        vertex.exitance.setTo(vertex.futureExitances[time - camDist]);
+      const vertices = this.env.vertices;
+      for (let v = 0; v < vertices.length; v++) {
+        const camDist = camPos ? this.getTimeDist(vertices[v].pos, camPos) : 0;
+        vertices[v].exitance.setTo(vertices[v].futureExitances[time - camDist]);
       }
       return true;
     }
@@ -64,41 +65,41 @@ export default class SlowRad {
 
     const shoot = new Spectra();
 
-    // this.env.patches is a generator. Can't while loop
-    for (const currentPatch of this.env.patches) { // For every patch in scene
+    const patches = this.env.patches;
+    const surfaces = this.env.surfaces;
+    for (let cp = 0; cp < patches.length; cp++) { // For every patch in scene
       // calculate form factors
-      const rffArray = currentPatch.rffArray;
+      const rffArray = patches[cp].rffArray;
 
-      // this.env.surfaces is a generator. Can't while loop
-      for (const surface of this.env.surfaces) { // For every surface in scene
+      for (let s = 0; s < surfaces.length; s++) { // For every surface in scene
         // Get surface reflectance
-        const reflect = surface.reflectance;
+        const reflect = surfaces[s].reflectance;
 
-        for (let p = 0; p < surface.patches.length; p++) { // For every patch of the current surface
+        for (let p = 0; p < surfaces[s].patches.length; p++) { // For every patch of the current surface
           // ignore self patch
-          if (surface.patches[p] !== currentPatch) {
-            for (let e = 0; e < surface.patches[p].elements.length; e++) { // For every element of the current surface patch
+          if (surfaces[s].patches[p] !== patches[cp]) {
+            for (let e = 0; e < surfaces[s].patches[p].elements.length; e++) { // For every element of the current surface patch
               // Check element visibility
-              if (rffArray[surface.patches[p].elements[e].number] > 0) {
+              if (rffArray[surfaces[s].patches[p].elements[e].number] > 0) {
                 // compute when the element would receive the light
-                const receivingTime = this.now + currentPatch.distArray[surface.patches[p].elements[e].number];
+                const receivingTime = this.now + patches[cp].distArray[surfaces[s].patches[p].elements[e].number];
                 // only propagate the light if we aren't out of future buffer
                 if (receivingTime < this.maxTime) {
                   // get reciprocal form factor
-                  const rff = rffArray[surface.patches[p].elements[e].number];
+                  const rff = rffArray[surfaces[s].patches[p].elements[e].number];
 
                   // Get shooting patch unsent exitance
-                  shoot.setTo(currentPatch.futureExitances[this.now]);
+                  shoot.setTo(patches[cp].futureExitances[this.now]);
 
                   // Calculate delta exitance
                   shoot.scale(rff);
                   shoot.multiply(reflect);
 
                   // Store element exitance
-                  surface.patches[p].elements[e].futureExitances[receivingTime].add(shoot);
+                  surfaces[s].patches[p].elements[e].futureExitances[receivingTime].add(shoot);
 
-                  shoot.scale(surface.patches[p].elements[e].area / surface.patches[p].area);
-                  surface.patches[p].futureExitances[receivingTime].add(shoot);
+                  shoot.scale(surfaces[s].patches[p].elements[e].area / surfaces[s].patches[p].area);
+                  surfaces[s].patches[p].futureExitances[receivingTime].add(shoot);
                 }
               }
             }
@@ -107,7 +108,7 @@ export default class SlowRad {
       }
 
       // Reset unsent exitance to zero
-      currentPatch.futureExitances[this.now].reset();
+      patches[cp].futureExitances[this.now].reset();
     }
 
     this.env.interpolateVertexExitances(this.now);
@@ -126,10 +127,10 @@ export default class SlowRad {
     this.ffd.calculateFormFactors(patch, this.env, rffArray);
 
     // compute reciprocal form factors
-    // this.env.elements is a generator. Can't while loop
-    for (const element of this.env.elements) {
-      const i = element.number;
-      rffArray[i] = Math.min(rffArray[i] * patch.area / element.area, 1);
+    const elements = this.env.elements;
+    for (let e = 0; e < elements.length; e++) {
+      const i = elements[e].number;
+      rffArray[i] = Math.min(rffArray[i] * patch.area / elements[e].area, 1);
     }
   }
 
@@ -143,11 +144,12 @@ export default class SlowRad {
     const distArray = currentPatch.distArray = new Array(this.env.elementCount).fill(null);
     distArray.speedOfLight = this.speedOfLight;
 
-    for (const patch of this.env.patches) {
+    const patches = this.env.patches;
+    for (let p = 0; p < patches.length; p++) {
       // ignore self patch
-      if (patch !== currentPatch) {
-        for (let e = 0; e < patch.elements.length; e++) {
-          distArray[patch.elements[e].number] = this.getTimeDist(currentPatch.center, patch.elements[e].center);
+      if (patches[p] !== currentPatch) {
+        for (let e = 0; e < patches[p].elements.length; e++) {
+          distArray[patches[p].elements[e].number] = this.getTimeDist(currentPatch.center, patches[p].elements[e].center);
         }
       }
     }
@@ -164,20 +166,20 @@ export default class SlowRad {
   }
 
   initExitance() {
-    // This.env.surfaces is a generator. Can't while loop
-    for (const surface of this.env.surfaces) {
+    const surfaces = this.env.surfaces;
+    for (let s = 0; s < surfaces.length; s++) {
       // Get emitting time for this surface
-      const activeTime = surface.activeTime;
+      const activeTime = surfaces[s].activeTime;
       if (!activeTime) {
         continue
       }
       // Get surface emittance
-      const emit = surface.emittance;
+      const emit = surfaces[s].emittance;
 
-      for (let p = 0; p < surface.patches.length; p++) {
+      for (let p = 0; p < surfaces[s].patches.length; p++) {
         // Initialize patch future exitances
         // set the lights to flash at the beginning
-        surface.patches[p].futureExitances.forEach((s, i) => {
+        surfaces[s].patches[p].futureExitances.forEach((s, i) => {
           if (Array.isArray(activeTime[0])) {
             // If entry is an array, then multiple activation ranges specified
             for (let e = 0; e < activeTime.length; e++) {
@@ -193,13 +195,13 @@ export default class SlowRad {
         });
 
         // Initialize element and vertex future exitances
-        for (let e = 0; e < surface.patches[p].elements.length; e++) {
-          for (let fe = 0; fe < surface.patches[p].elements[e].futureExitances.length; fe++) {
-            surface.patches[p].elements[e].futureExitances[fe].setTo(surface.patches[p].futureExitances[fe]);
+        for (let e = 0; e < surfaces[s].patches[p].elements.length; e++) {
+          for (let fe = 0; fe < surfaces[s].patches[p].elements[e].futureExitances.length; fe++) {
+            surfaces[s].patches[p].elements[e].futureExitances[fe].setTo(surfaces[s].patches[p].futureExitances[fe]);
           }
-          for (let v = 0; v < surface.patches[p].elements[e].vertices.length; v++) {
-            for (let fe = 0; fe < surface.patches[p].elements[e].vertices[v].futureExitances.length; fe++) {
-              surface.patches[p].elements[e].vertices[v].futureExitances[fe].reset();
+          for (let v = 0; v < surfaces[s].patches[p].elements[e].vertices.length; v++) {
+            for (let fe = 0; fe < surfaces[s].patches[p].elements[e].vertices[v].futureExitances.length; fe++) {
+              surfaces[s].patches[p].elements[e].vertices[v].futureExitances[fe].reset();
             }
           }
         }
@@ -215,10 +217,11 @@ export default class SlowRad {
     let curr = 0;
     yield { curr, max };
 
-    for (const currentPatch of this.env.patches) {
-      curr += 1;
-      this.computeDistArray(currentPatch);
-      this.computeRFFArray(currentPatch);
+    const patches = this.env.patches;
+    for (let cp = 0; cp < patches.length; cp++) {
+      curr++;
+      this.computeDistArray(patches[cp]);
+      this.computeRFFArray(patches[cp]);
       yield { curr, max };
     }
 

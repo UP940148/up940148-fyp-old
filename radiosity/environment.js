@@ -60,13 +60,13 @@ export default class Environment {
     return e;
   }
 
-  * _vertexIterator() {
-    for (const instance of this.instances) {
-      for (let v = 0; v < instance.vertices.length; v++) {
-        yield instance.vertices[v];
-      }
-    }
-  }
+  // * _vertexIterator() {
+  //   for (const instance of this.instances) {
+  //     for (let v = 0; v < instance.vertices.length; v++) {
+  //       yield instance.vertices[v];
+  //     }
+  //   }
+  // }
 
   // get vertices() {
   //   return this._vertexIterator();
@@ -86,17 +86,17 @@ export default class Environment {
     return verts;
   }
 
-  * _elementsIterator() {
-    for (const instance of this.instances) {
-      for (let s = 0; s < instance.surfaces.length; s++) {
-        for (let p = 0; p < instance.surfaces[s].patches.length; p++) {
-          for (let e = 0; e < instance.surfaces[s].patches[p].elements.length; e++) {
-            yield instance.surfaces[s].patches[p].elements[e];
-          }
-        }
-      }
-    }
-  }
+  // * _elementsIterator() {
+  //   for (const instance of this.instances) {
+  //     for (let s = 0; s < instance.surfaces.length; s++) {
+  //       for (let p = 0; p < instance.surfaces[s].patches.length; p++) {
+  //         for (let e = 0; e < instance.surfaces[s].patches[p].elements.length; e++) {
+  //           yield instance.surfaces[s].patches[p].elements[e];
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   // get elements() {
   //   return this._elementsIterator();
@@ -124,15 +124,15 @@ export default class Environment {
     return elems;
   }
 
-  * _patchesIterator() {
-    for (const instance of this.instances) {
-      for (let s = 0; s < instance.surfaces.length; s++) {
-        for (let p = 0; p < instance.surfaces[s].patches.length; p++) {
-          yield instance.surfaces[s].patches[p];
-        }
-      }
-    }
-  }
+  // * _patchesIterator() {
+  //   for (const instance of this.instances) {
+  //     for (let s = 0; s < instance.surfaces.length; s++) {
+  //       for (let p = 0; p < instance.surfaces[s].patches.length; p++) {
+  //         yield instance.surfaces[s].patches[p];
+  //       }
+  //     }
+  //   }
+  // }
 
   // get patches() {
   //   return this._patchesIterator();
@@ -156,13 +156,13 @@ export default class Environment {
     return patches;
   }
 
-  * _surfacesIterator() {
-    for (const instance of this.instances) {
-      for (let s = 0; s < instance.surfaces.length; s++) {
-        yield instance.surfaces[s];
-      }
-    }
-  }
+  // * _surfacesIterator() {
+  //   for (const instance of this.instances) {
+  //     for (let s = 0; s < instance.surfaces.length; s++) {
+  //       yield instance.surfaces[s];
+  //     }
+  //   }
+  // }
 
   // get surfaces() {
   //   return this._surfacesIterator();

@@ -28,20 +28,21 @@ export default class HemiCube {
       // Clear depth uffer
       this.scanner.initBuffer();
 
-      for (const patch of env.patches) {
+      const patches = env.patches;
+      for (let p = 0; p < patches.length; p++) {
         // If patch is part of light source, ignore
-        if (patch.parentSurface.isLight) {
+        if (patches[p].parentSurface.isLight) {
           continue;
         }
         // Determine patch visibility
-        const visible = !this.clipper.isFacingAway(patch);
-        if (patch !== originPatch && visible) {
-          for (let e = 0; e < patch.elements.length; e++) {
+        const visible = !this.clipper.isFacingAway(patches[p]);
+        if (patches[p] !== originPatch && visible) {
+          for (let e = 0; e < patches[p].elements.length; e++) {
             // Clip element to face view volume
-            this.clipper.clip(patch.elements[e], this.out);
+            this.clipper.clip(patches[p].elements[e], this.out);
 
             // Draw the clipped polygon on the hemicube face
-            this.scanner.scan(this.out, patch.elements[e].number);
+            this.scanner.scan(this.out, patches[p].elements[e].number);
           }
         }
       }
