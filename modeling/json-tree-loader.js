@@ -10,7 +10,7 @@ const leafReflectance = new Rad.Spectra(0.8, 0.8, 0.8);
 
 export async function load(filepath) {
   const tree = await getObject(filepath);
-  console.log(tree);
+  // console.log(tree);
 
   let surfaces = [];
 
