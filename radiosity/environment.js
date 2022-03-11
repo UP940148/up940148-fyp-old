@@ -34,19 +34,15 @@ export default class Environment {
     minX = minY = minZ = Infinity;
     let maxX, maxY, maxZ;
     maxX = maxY = maxZ = -Infinity;
-    let i = 0;
-    while (i < this.instances.length) {
-      let v = 0;
-      while (v < this.instances[i].vertices.length) {
-        minX = Math.min(minX, this.instances[i].vertices[v].pos.x);
-        minY = Math.min(minY, this.instances[i].vertices[v].pos.y);
-        minZ = Math.min(minZ, this.instances[i].vertices[v].pos.z);
-        maxX = Math.max(maxX, this.instances[i].vertices[v].pos.x);
-        maxY = Math.max(maxY, this.instances[i].vertices[v].pos.y);
-        maxZ = Math.max(maxZ, this.instances[i].vertices[v].pos.z);
-        v++;
+    for (const instance of this.instances) {
+      for (const vertex of instance.vertices) {
+        minX = Math.min(minX, vertex.pos.x);
+        minY = Math.min(minY, vertex.pos.y);
+        minZ = Math.min(minZ, vertex.pos.z);
+        maxX = Math.max(maxX, vertex.pos.x);
+        maxY = Math.max(maxY, vertex.pos.y);
+        maxZ = Math.max(maxZ, vertex.pos.z);
       }
-      i++;
     }
     return [new Point3(minX, minY, minZ), new Point3(maxX, maxY, maxZ)];
   }
@@ -54,25 +50,21 @@ export default class Environment {
   numberElements() {
     if (this.elementsNumbered != null) return this.elementsNumbered;
 
-    let e = 0;
-    while (e < this.elements.length) {
-      this.elements[e].number = e
-      e++;
+    let elementNumber = 0;
+    for (const e of this.elements) {
+      e.number = elementNumber;
+      elementNumber += 1;
     }
 
-    this.elementsNumbered = e;
-    return e;
+    this.elementsNumbered = elementNumber;
+    return elementNumber;
   }
 
   * _vertexIterator() {
-    let i = 0;
-    while (i < this.instances.length) {
-      let v = 0;
-      while (v < this.instances[i].vertices.length) {
-        yield this.instances[i].vertices[v];
-        v++;
+    for (const i of this.instances) {
+      for (const v of i.vertices) {
+        yield v;
       }
-      i++;
     }
   }
 
@@ -81,22 +73,14 @@ export default class Environment {
   }
 
   * _elementsIterator() {
-    let i = 0;
-    while (i < this.instances.length) {
-      let s = 0;
-      while (s < this.instances[i].surfaces.length) {
-        let p = 0;
-        while (p < this.instances[i].surfaces[s].patches.length) {
-          let e = 0;
-          while (e < this.instances[i].surfaces[s].patches[p].elements.length) {
-            yield this.instances[i].surfaces[s].patches[p].elements[e];
-            e++;
+    for (const i of this.instances) {
+      for (const s of i.surfaces) {
+        for (const p of s.patches) {
+          for (const e of p.elements) {
+            yield e;
           }
-          p++;
         }
-        s++;
       }
-      i++;
     }
   }
 
@@ -105,18 +89,12 @@ export default class Environment {
   }
 
   * _patchesIterator() {
-    let i = 0;
-    while (i < this.instances.length) {
-      let s = 0;
-      while (s < this.instances[i].surfaces.length) {
-        let p = 0;
-        while (p < this.instances[i].surfaces[s].patches.length) {
-          yield this.instances[i].surfaces[s].patches[p];
-          p++;
+    for (const i of this.instances) {
+      for (const s of i.surfaces) {
+        for (const p of s.patches) {
+          yield p;
         }
-        s++;
       }
-      i++;
     }
   }
 
@@ -125,14 +103,10 @@ export default class Environment {
   }
 
   * _surfacesIterator() {
-    let i = 0;
-    while (i < this.instances.length) {
-      let s = 0;
-      while (s < this.instances[i].surfaces.length) {
-        yield this.instances[i].surfaces[s];
-        s++;
+    for (const i of this.instances) {
+      for (const s of i.surfaces) {
+        yield s;
       }
-      i++;
     }
   }
 
@@ -141,23 +115,15 @@ export default class Environment {
   }
 
   checkNoVerticesAreShared() {
-    let i = 0
-    while (i < this.instances.length) {
-      let s = 0;
-      while (s < this.instances[i].surfaces.length) {
-        let p = 0;
-        while (p < this.instances[i].surfaces[s].patches.length) {
-          if (!allVerticesBelongToSurface(this.instances[i].surfaces[s].patches[p].vertices, this.instances[i].surfaces[s])) return false;
-          let e = 0;
-          while (e < this.instances[i].surfaces[s].patches[p].elements.length) {
-            if (!allVerticesBelongToSurface(this.instances[i].surfaces[s].patches[p].elements[e].vertices, this.instances[i].surfaces[s])) return false;
-            e++;
+    for (const i of this.instances) {
+      for (const s of i.surfaces) {
+        for (const p of s.patches) {
+          if (!allVerticesBelongToSurface(p.vertices, s)) return false;
+          for (const e of p.elements) {
+            if (!allVerticesBelongToSurface(e.vertices, s)) return false;
           }
-          p++;
         }
-        s++;
       }
-      i++;
     }
     return true;
   }
@@ -166,56 +132,39 @@ export default class Environment {
   interpolateVertexExitances(now) {
     if (now === undefined) {
       // everything has one .exitance
-      let v = 0;
-      while (v < this.vertices.length) {
-        this.vertices[v].exitance.reset();
+      for (const vertex of this.vertices) {
+        vertex.exitance.reset();
 
-        let e = 0;
-        while (e < this.vertices[v].elements.length) {
-          this.vertices[v].exitance.add(this.vertices[v].elements[e].exitance);
-          e++;
+        for (const element of vertex.elements) {
+          vertex.exitance.add(element.exitance);
         }
-        this.vertices[v].exitance.scale(1 / e);
-        v++;
+        vertex.exitance.scale(1 / vertex.elements.length);
       }
     } else {
       // we deal with .futureExitances
-
-      let v = 0;
-      while (v < this.vertices.length) {
+      for (const vertex of this.vertices) {
         // don't interpolate past the size of futureExitances
-        if (now >= this.vertices[v].futureExitances.length) return;
+        if (now >= vertex.futureExitances.length) return;
 
-        this.vertices[v].futureExitances[now].reset();
+        vertex.futureExitances[now].reset();
 
-        let e = 0;
-        while (e < this.vertices[v].elements.length) {
-          this.vertices[v].futureExitances[now].add(this.vertices[v].elements[e].futureExitances[now]);
-          e++;
+        for (const element of vertex.elements) {
+          vertex.futureExitances[now].add(element.futureExitances[now]);
         }
-        this.vertices[v].futureExitances[now].scale(1 / e);
-        v++;
+        vertex.futureExitances[now].scale(1 / vertex.elements.length);
       }
     }
   }
 
   initializeFutureExitances(length) {
-    let p = 0;
-    while (p < this.patches.length) {
-      initializeObjectFutureExitances(this.patches[p], length);
-      p++;
+    for (const patch of this.patches) {
+      initializeObjectFutureExitances(patch, length);
     }
-
-    let e = 0;
-    while (e < this.elements.length) {
-      initializeObjectFutureExitances(this.elements[e], length);
-      e++;
+    for (const element of this.elements) {
+      initializeObjectFutureExitances(element, length);
     }
-
-    let v = 0;
-    while (v < this.vertices.length) {
-      initializeObjectFutureExitances(this.vertices[v], length);
-      v++;
+    for (const vertex of this.vertices) {
+      initializeObjectFutureExitances(vertex, length);
     }
   }
 }
@@ -232,14 +181,10 @@ function sum(array) {
 }
 
 function allVerticesBelongToSurface(vertices, surface) {
-  let v = 0;
-  while (v < vertices.length) {
-    let e = 0;
-    while (e < vertices[v].elements.length) {
-      if (vertices[v].elements[e].parentPatch.parentSurface !== surface) return false;
-      e++;
+  for (const v of vertices) {
+    for (const el of v.elements) {
+      if (el.parentPatch.parentSurface !== surface) return false;
     }
-    v++;
   }
   return true;
 }
