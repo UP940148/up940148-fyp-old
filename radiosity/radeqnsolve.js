@@ -29,20 +29,26 @@ export default class RadEqnSolve {
       // Get surface emittance
       const emit = surface.emittance;
 
-      for (const patch of surface.patches) {
+      let p = 0;
+      while (p < surface.patches.length) {
         // Set patch unsent exitance
-        patch.exitance.setTo(emit);
+        surface.patches[p].exitance.setTo(emit);
 
         // Update total envnironment flux
-        this.totalFlux += patch.unsentFlux;
+        this.totalFlux += surface.patches[p].unsentFlux;
 
         // Initialize element and vertex exitance
-        for (const element of patch.elements) {
-          element.exitance.setTo(emit);
-          for (const vertex of patch.vertices) {
-            vertex.exitance.reset();
-          }
+        let e = 0;
+        while (e < surface.patches[p].elements.length) {
+          surface.patches[p].elements[e].exitance.setTo(emit);
+          e++;
         }
+        let v = 0;
+        while (v < surface.patches[p].vertices.length) {
+          surface.patches[p].vertices[v].exitance.reset();
+          v++;
+        }
+        p++;
       }
     }
 
