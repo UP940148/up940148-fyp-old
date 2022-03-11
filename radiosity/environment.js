@@ -68,8 +68,22 @@ export default class Environment {
     }
   }
 
+  // get vertices() {
+  //   return this._vertexIterator();
+  // }
+
   get vertices() {
-    return this._vertexIterator();
+    const verts = [];
+    let i = 0;
+    while (i < this.instances.length) {
+      let v = 0;
+      while (v < this.instances[i].vertices.length) {
+        verts.push(this.instances[i].vertices[v]);
+        v++;
+      }
+      i++;
+    }
+    return verts;
   }
 
   * _elementsIterator() {
@@ -84,8 +98,30 @@ export default class Environment {
     }
   }
 
+  // get elements() {
+  //   return this._elementsIterator();
+  // }
+
   get elements() {
-    return this._elementsIterator();
+    const elems = [];
+    let i = 0;
+    while (i < this.instances.length) {
+      let s = 0;
+      while (s < this.instances[i].surfaces.length) {
+        let p = 0;
+        while (p < this.instances[i].surfaces[s].patches.length) {
+          let e = 0;
+          while (e < this.instances[i].surfaces[s].patches[p].elements.length) {
+            elems.push(this.instances[i].surfaces[s].patches[p].elements[e]);
+            e++;
+          }
+          p++;
+        }
+        s++;
+      }
+      i++;
+    }
+    return elems;
   }
 
   * _patchesIterator() {
@@ -98,8 +134,26 @@ export default class Environment {
     }
   }
 
+  // get patches() {
+  //   return this._patchesIterator();
+  // }
+
   get patches() {
-    return this._patchesIterator();
+    const patches = [];
+    let i = 0;
+    while (i < this.instances.length) {
+      let s = 0;
+      while (s < this.instances[i].surfaces.length) {
+        let p = 0;
+        while (p < this.instances[i].surfaces[s].patches.length) {
+          patches.push(this.instances[i].surfaces[s].patches[p]);
+          p++;
+        }
+        s++;
+      }
+      i++;
+    }
+    return patches;
   }
 
   * _surfacesIterator() {
@@ -110,8 +164,22 @@ export default class Environment {
     }
   }
 
+  // get surfaces() {
+  //   return this._surfacesIterator();
+  // }
+
   get surfaces() {
-    return this._surfacesIterator();
+    const surfs = [];
+    let i = 0;
+    while (i < this.instances.length) {
+      let s = 0;
+      while (s < this.instances[i].surfaces.length) {
+        surfs.push(this.instances[i].surfaces[s]);
+        s++;
+      }
+      i++;
+    }
+    return surfs;
   }
 
   checkNoVerticesAreShared() {
