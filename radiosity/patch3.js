@@ -14,8 +14,10 @@ export default class Patch3 extends Element3 {
     this.parentSurface = null;  // Parent surface
 
     // set parent patch of elements
-    for (const el of elements) {
-      el.parentPatch = this;
+    let e = 0;
+    while (e < elements.length) {
+      elements[e].parentPatch = this;
+      e++;
     }
   }
 
