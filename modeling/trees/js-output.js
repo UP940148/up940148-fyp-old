@@ -36,7 +36,7 @@ function jsonLeaf(p) {
     },
     rotation: {
       x: 0,
-      y: 80,
+      y: 50,
       z: a,
     },
   };

@@ -24,7 +24,7 @@ function main() {
 
   const points = shapes.hollowSphereAttractionPoints(N, r, P(0, 0, trunk + r), hollowing);
   // const points = shapes.hollowHalfSphereAttractionPoints(N, r, P(0, 0, trunk), hollowing);
-  // const points = shapes.nRandomSpheres(5, 1000, r);
+  // const points = shapes.nRandomSpheres(5, 100, r);
 
   const tree = trees.makeTree(points, {
     D: 1,

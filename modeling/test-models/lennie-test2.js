@@ -51,7 +51,7 @@ const cubeLightEmittance = [
 export default async function createScene() {
   const tree1 = await TreeLoader.load('../modeling/trees/tree.json');
   const treexForm = new Transform3();
-  treexForm.scale(0.08, 0.08, 0.08);
+  treexForm.scale(0.2, 0.2, 0.2);
   treexForm.translate(0, 22, 0);
   treexForm.transform(tree1);
 
