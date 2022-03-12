@@ -19,8 +19,10 @@ export default class Element3 {
     // if we're an Element3 but not a subclass,
     // add ourself to each vertex's list of elements that use it
     if (Object.getPrototypeOf(this) === Element3.prototype) {
-      for (let v = 0; v < vertices.length; v++) {
+      let v = 0;
+      while (v < vertices.length) {
         vertices[v]._addElement(this);
+        v++;
       }
     }
   }
@@ -50,8 +52,10 @@ export default class Element3 {
   get center() {
     if (this._center == null) {
       const cv = new Vector3(0, 0, 0);
-      for (let v = 0; v < this.vertices.length; v++) {
+      let v = 0;
+      while (v < this.vertices.length) {
         cv.add(new Vector3(this.vertices[v].pos));
+        v++;
       }
       cv.scale(1 / this.vertices.length);
       this._center = new Point3(cv.x, cv.y, cv.z);

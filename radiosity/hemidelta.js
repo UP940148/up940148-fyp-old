@@ -7,9 +7,11 @@ export default class HemiDelta {
     // Initialize arrays
     this.sideArray = [];
     this.topArray = [];
-    for (let i = 0; i < this.arrayDim; i += 1) {
+    let i = 0;
+    while (i < this.arrayDim) {
       this.sideArray.push([]);
       this.topArray.push([]);
+      i++;
     }
 
     // Initialize cell size and area
@@ -20,14 +22,18 @@ export default class HemiDelta {
     // i,j number cells from the centre of the face
     // x,y are the centre of a cell
     // on side face, j (y) goes up from hemicube base
-    for (let i = 0; i < this.arrayDim; i += 1) {
+    i = 0;
+    while (i < this.arrayDim) {
       const x = (i + 0.5) * size;
-      for (let j = 0; j < this.arrayDim; j += 1) {
+      let j = 0;
+      while (j < this.arrayDim) {
         const y = (j + 0.5) * size;
         const r2 = x ** 2 + y ** 2 + 1;
         this.topArray[j][i] = area / (Math.PI * r2 ** 2);
         this.sideArray[j][i] = (y * area) / (Math.PI * r2 ** 2);
+        j++;
       }
+      i++;
     }
   }
 

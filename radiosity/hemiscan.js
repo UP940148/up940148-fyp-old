@@ -17,25 +17,34 @@ export default class HemiScan extends FormScan {
 
     // Initialize cell buffer - 2d array of FormCellInfo
     this.cellBuffer = [];
-    for (let i = 0; i < resolution; i++) {
+    let i = 0;
+    while (i < resolution) {
       const row = [];
-      for (let j = 0; j < resolution; j++) {
+      let j = 0;
+      while (j < resolution) {
         row[j] = new FormCellInfo();
+        j++;
       }
       this.cellBuffer[i] = row;
+      i++;
     }
   }
 
   initBuffer() {
-    for (let row = 0; row < this.resolution; row++) {
-      for (let col = 0; col < this.resolution; col++) {
+    let row = 0;
+    while (row < this.resolution) {
+      let col = 0;
+      while (col < this.resolution) {
         this.cellBuffer[row][col].reset();
+        col++;
       }
+      row++;
     }
   }
 
   drawEdgeList(polyId) {
-    for (let y = this.yMin; y < this.yMax; y++) {
+    let y = this.yMin;
+    while (y < this.yMax) {
       const edge = this.edgeList[y];
 
       // Get scan line info, scan start and end
@@ -60,7 +69,8 @@ export default class HemiScan extends FormScan {
         let iz = ss.z;
 
         // Enter scan line
-        for (let x = sx; x < ex; x++) {
+        let x = sx;
+        while (x < ex) {
           const cell = this.cellBuffer[y][x];
 
           // Check element visibility
@@ -71,31 +81,41 @@ export default class HemiScan extends FormScan {
           }
           // Update element pseudodepth
           iz += dz;
+          x++;
         }
       }
+      y++;
     }
   }
 
   sumDeltas(ffArray, faceId) {
     if (faceId === TOP) {
       // Scan entire face buffer
-      for (let row = 0; row < this.resolution; row++) {
-        for (let col = 0; col < this.resolution; col++) {
+      let row = 0;
+      while (row < this.resolution) {
+        let col = 0;
+        while (col < this.resolution) {
           const polyId = this.cellBuffer[row][col].polyId;
           if (polyId != null) {
             ffArray[polyId] += this.dff.getTopFactor(row, col);
           }
+          col++;
         }
+        row++;
       }
     } else {
       // Scan upper half of face buffer only
-      for (let row = this.resolution / 2; row < this.resolution; row++) {
-        for (let col = 0; col < this.resolution; col++) {
+      let row = this.resolution / 2;
+      while (row < this.resolution) {
+        let col = 0;
+        while (col < this.resolution) {
           const polyId = this.cellBuffer[row][col].polyId;
           if (polyId != null) {
             ffArray[polyId] += this.dff.getSideFactor(row, col);
           }
+          col++;
         }
+        row++;
       }
     }
   }

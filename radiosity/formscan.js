@@ -45,14 +45,18 @@ export default class FormScan {
     this.yMax = null;           // Maximum y-axis co-ord
 
     this.edgeList = [];         // Edge list
-    for (let i = 0; i < resolution; i += 1) {
+    let i = 0;
+    while (i < resolution) {
       this.edgeList[i] = new FormEdgeInfo();
+      i++;
     }
 
     this.numVert = null;        // Number of vetices
     this.vInfo = [];            // Vertex info table
-    for (let i = 0; i < MAX_VERT; i += 1) {
+    i = 0;
+    while (i < MAX_VERT) {
       this.vInfo[i] = new FormVertexInfo();
+      i++;
     }
   }
 
@@ -64,7 +68,8 @@ export default class FormScan {
     // Get number of vertices
     this.numVert = poly.numVert;
 
-    for (let i = 0; i < this.numVert; i++) {
+    let i = 0;
+    while (i < this.numVert) {
       const v = this.vInfo[i];
       // Get vertex normalized view space co-ordinates
       const pos = poly.vertices[i];
@@ -81,21 +86,28 @@ export default class FormScan {
       // Update polygon y-axis limits
       if (v.faceY < this.yMin) this.yMin = v.faceY;
       if (v.faceY > this.yMax) this.yMax = v.faceY;
+      i++;
     }
   }
 
   scanEdges() {
     // Initialize edge list
-    for (let i = this.yMin; i < this.yMax; i++) {
+    let i = this.yMin;
+    while (i < this.yMax) {
       this.edgeList[i].reset();
+      i++;
     }
 
-    for (let i = 0; i < this.numVert; i++) {
+    i = 0;
+    while (i < this.numVert) {
       // Get edge vertices: start vertex, end vertex
       let sv = this.vInfo[i];
       let ev = this.vInfo[(i + 1) % this.numVert];
 
-      if (sv.faceY === ev.faceY) continue; // Ignore horizontal edges
+      if (sv.faceY === ev.faceY) { // Ignore horizontal edges
+        i++;
+        continue;
+      }
 
       if (sv.faceY > ev.faceY) {
         // Swap edge vertices
@@ -112,14 +124,17 @@ export default class FormScan {
       const dz = (ev.pos.z - sv.pos.z) / yDist;
 
       // Scan convert edge
-      for (let j = sv.faceY; j < ev.faceY; j++) {
+      let j = sv.faceY;
+      while (j < ev.faceY) {
         // Insert edge itersection info
         this.edgeList[j].add(ix, iz);
 
         // Update edge intersection info
         ix += dx;
         iz += dz;
+        j++;
       }
+      i++;
     }
   }
 

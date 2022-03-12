@@ -7,8 +7,10 @@ export default class FormPoly {
     this.vertices = new Array(MAX_VERT); // Output vertex array
     this.numVert = 0;                    // current number of vertices
 
-    for (let i = 0; i < MAX_VERT; i += 1) {
+    let i = 0;
+    while (i < MAX_VERT) {
       this.vertices[i] = new Point3();
+      i++;
     }
   }
 

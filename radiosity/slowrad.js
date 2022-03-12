@@ -46,9 +46,11 @@ export default class SlowRad {
 
       // set vertex colors to their colors from the given time
       const vertices = this.env.vertices;
-      for (let v = 0; v < vertices.length; v++) {
+      let v = 0;
+      while (v < vertices.length) {
         const camDist = camPos ? this.getTimeDist(vertices[v].pos, camPos) : 0;
         vertices[v].exitance.setTo(vertices[v].futureExitances[time - camDist]);
+        v++;
       }
       return true;
     }
@@ -67,18 +69,22 @@ export default class SlowRad {
 
     const patches = this.env.patches;
     const surfaces = this.env.surfaces;
-    for (let cp = 0; cp < patches.length; cp++) { // For every patch in scene
+    let cp = 0;
+    while (cp < patches.length) { // For every patch in scene
       // calculate form factors
       const rffArray = patches[cp].rffArray;
 
-      for (let s = 0; s < surfaces.length; s++) { // For every surface in scene
+      let s = 0;
+      while (s < surfaces.length) { // For every surface in scene
         // Get surface reflectance
         const reflect = surfaces[s].reflectance;
 
-        for (let p = 0; p < surfaces[s].patches.length; p++) { // For every patch of the current surface
+        let p = 0;
+        while (p < surfaces[s].patches.length) { // For every patch of the current surface
           // ignore self patch
           if (surfaces[s].patches[p] !== patches[cp]) {
-            for (let e = 0; e < surfaces[s].patches[p].elements.length; e++) { // For every element of the current surface patch
+            let e = 0;
+            while (e < surfaces[s].patches[p].elements.length) { // For every element of the current surface patch
               // Check element visibility
               if (rffArray[surfaces[s].patches[p].elements[e].number] > 0) {
                 // compute when the element would receive the light
@@ -102,13 +108,17 @@ export default class SlowRad {
                   surfaces[s].patches[p].futureExitances[receivingTime].add(shoot);
                 }
               }
+              e++;
             }
           }
+          p++;
         }
+        s++;
       }
 
       // Reset unsent exitance to zero
       patches[cp].futureExitances[this.now].reset();
+      cp++;
     }
 
     this.env.interpolateVertexExitances(this.now);
@@ -128,9 +138,11 @@ export default class SlowRad {
 
     // compute reciprocal form factors
     const elements = this.env.elements;
-    for (let e = 0; e < elements.length; e++) {
+    let e = 0;
+    while (e < elements.length) {
       const i = elements[e].number;
       rffArray[i] = Math.min(rffArray[i] * patch.area / elements[e].area, 1);
+      e++;
     }
   }
 
@@ -145,13 +157,17 @@ export default class SlowRad {
     distArray.speedOfLight = this.speedOfLight;
 
     const patches = this.env.patches;
-    for (let p = 0; p < patches.length; p++) {
+    let p = 0;
+    while (p < patches.length) {
       // ignore self patch
       if (patches[p] !== currentPatch) {
-        for (let e = 0; e < patches[p].elements.length; e++) {
+        let e = 0;
+        while (e < patches[p].elements.length) {
           distArray[patches[p].elements[e].number] = this.getTimeDist(currentPatch.center, patches[p].elements[e].center);
+          e++;
         }
       }
+      p++;
     }
   }
 
@@ -167,25 +183,30 @@ export default class SlowRad {
 
   initExitance() {
     const surfaces = this.env.surfaces;
-    for (let s = 0; s < surfaces.length; s++) {
+    let s = 0;
+    while (s < surfaces.length) {
       // Get emitting time for this surface
       const activeTime = surfaces[s].activeTime;
       if (!activeTime) {
+        s++;
         continue
       }
       // Get surface emittance
       const emit = surfaces[s].emittance;
 
-      for (let p = 0; p < surfaces[s].patches.length; p++) {
+      let p = 0;
+      while (p < surfaces[s].patches.length) {
         // Initialize patch future exitances
         // set the lights to flash at the beginning
         surfaces[s].patches[p].futureExitances.forEach((s, i) => {
           if (Array.isArray(activeTime[0])) {
             // If entry is an array, then multiple activation ranges specified
-            for (let e = 0; e < activeTime.length; e++) {
+            let e = 0;
+            while (e < activeTime.length) {
               if (activeTime[e][0] <= i && i <= activeTime[e][1]) {
                 s.setTo(emit);
               }
+              e++;
             }
           } else if (activeTime[0] <= i && i <= activeTime[1]) {
             s.setTo(emit);
@@ -195,17 +216,27 @@ export default class SlowRad {
         });
 
         // Initialize element and vertex future exitances
-        for (let e = 0; e < surfaces[s].patches[p].elements.length; e++) {
-          for (let fe = 0; fe < surfaces[s].patches[p].elements[e].futureExitances.length; fe++) {
+        let e = 0;
+        while (e < surfaces[s].patches[p].elements.length) {
+          let fe = 0;
+          while (fe < surfaces[s].patches[p].elements[e].futureExitances.length) {
             surfaces[s].patches[p].elements[e].futureExitances[fe].setTo(surfaces[s].patches[p].futureExitances[fe]);
+            fe++;
           }
-          for (let v = 0; v < surfaces[s].patches[p].elements[e].vertices.length; v++) {
-            for (let fe = 0; fe < surfaces[s].patches[p].elements[e].vertices[v].futureExitances.length; fe++) {
+          let v = 0;
+          while (v < surfaces[s].patches[p].elements[e].vertices.length) {
+            let fe = 0;
+            while (fe < surfaces[s].patches[p].elements[e].vertices[v].futureExitances.length) {
               surfaces[s].patches[p].elements[e].vertices[v].futureExitances[fe].reset();
+              fe++;
             }
+            v++;
           }
+          e++;
         }
+        p++;
       }
+      s++;
     }
 
     return this;
@@ -218,11 +249,13 @@ export default class SlowRad {
     yield { curr, max };
 
     const patches = this.env.patches;
-    for (let cp = 0; cp < patches.length; cp++) {
+    let cp = 0;
+    while (cp < patches.length) {
       curr++;
       this.computeDistArray(patches[cp]);
       this.computeRFFArray(patches[cp]);
       yield { curr, max };
+      cp++;
     }
 
     while (!this.calculate()) {

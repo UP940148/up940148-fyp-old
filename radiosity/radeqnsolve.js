@@ -26,11 +26,13 @@ export default class RadEqnSolve {
   initExitance() {
     this.totalFlux = 0;
     const surfaces = this.env.surfaces;
-    for (let s = 0; s < surfaces.length; s++) {
+    let s = 0;
+    while (s < surfaces.length) {
       // Get surface emittance
       const emit = surfaces[s].emittance;
 
-      for (let p = 0; p < surfaces[s].patches.length; p++) {
+      let p = 0;
+      while (p < surfaces[s].patches.length) {
         // Set patch unsent exitance
         surfaces[s].patches[p].exitance.setTo(emit);
 
@@ -38,13 +40,19 @@ export default class RadEqnSolve {
         this.totalFlux += surfaces[s].patches[p].unsentFlux;
 
         // Initialize element and vertex exitance
-        for (let e = 0; e < surfaces[s].patches[p].elements.length; e++) {
+        let e = 0;
+        while (e < surfaces[s].patches[p].elements.length) {
           surfaces[s].patches[p].elements[e].exitance.setTo(emit);
+          e++;
         }
-        for (let v = 0; v < surfaces[s].patches[p].vertices.length; v++) {
+        let v = 0;
+        while (v < surfaces[s].patches[p].vertices.length) {
           surfaces[s].patches[p].vertices[v].exitance.reset();
+          v++;
         }
+        p++;
       }
+      s++;
     }
 
     return this;
@@ -56,7 +64,8 @@ export default class RadEqnSolve {
     let maxUnsent = 0;
 
     const patches = this.env.patches;
-    for (let p = 0; p < patches.length; p++) {
+    let p = 0;
+    while (p < patches.length) {
       // Get current unsent flux value
       const currentUnsent = patches[p].unsentFlux;
 
@@ -68,6 +77,7 @@ export default class RadEqnSolve {
         maxUnsent = currentUnsent;
         this.max = patches[p];
       }
+      p++;
     }
 
     // Update convergence value
@@ -87,7 +97,8 @@ export default class RadEqnSolve {
     const tmp = new Spectra();
 
     const patches = this.env.patches;
-    for (let p = 0; p < patches.length; p++) {
+    let p = 0;
+    while (p < patches.length) {
       // Update sum of patch areas times reflectances
       tmp.setTo(patches[p].parentSurface.reflectance);
       tmp.scale(patches[p].area);
@@ -95,6 +106,7 @@ export default class RadEqnSolve {
 
       // Update sum of patch areas
       this.totalArea += patches[p].area;
+      p++;
     }
 
     // Calculate atea-weighted average reflectance
@@ -113,11 +125,13 @@ export default class RadEqnSolve {
     const tmp = new Spectra();
 
     const patches = this.env.patches;
-    for (let p = 0; p < patches.length; p++) {
+    let p = 0;
+    while (p < patches.length) {
       // Update sum of unsent exitances times areas
       tmp.setTo(patches[p].exitance);
       tmp.scale(patches[p].area);
       sum.add(tmp);
+      p++;
     }
 
     // Calculate area-weighted average reflectance
