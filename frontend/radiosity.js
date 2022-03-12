@@ -26,11 +26,6 @@ export function open(env) {
   bufferingIterator = alg.open(env); // Env is current environment object
   // BufferingIterator is generator created from env object
 
-  // Set alg max time based on current scene max time
-  // if (env.maxTime) {
-  //   alg.maxTime = env.maxTime;
-  // }
-
   animationControls.setMaxTime(alg.maxTime);
   animationControls.reset();
 

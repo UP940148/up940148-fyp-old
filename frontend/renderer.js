@@ -252,11 +252,7 @@ function animate() {
   flightCam.position.z = -y;
 
   const [lookX, lookY, lookZ] = flightPath(currentStep + 2)
-  //flightCam.lookAt(lookX, lookY, lookZ);
   flightCam.lookAt(lookX, lookZ, -lookY);
-  // Hide faces that aren't currently alive
-  //console.log(scene);
-  //window.alert();
 
   if (camToggle.dataset.enabled) {
     renderer.render(scene, flightCam);
