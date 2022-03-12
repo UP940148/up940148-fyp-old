@@ -29,10 +29,6 @@ const environmentsList = [
   //   name: 'Main Scene',
   // },
   {
-    f: () => createMaze(8),
-    name: 'Same maze but subdivided (very slow!)',
-  },
-  {
     f: tree,
     name: 'Tree',
   },
