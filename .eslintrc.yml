@@ -1,4 +1,6 @@
 extends: portsoc
+env:
+  browser: true
 plugins:
   - import
 root: true
