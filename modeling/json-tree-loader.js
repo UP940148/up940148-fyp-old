@@ -8,31 +8,33 @@ import * as Face from './singleface.js';
 const branchReflectance = new Rad.Spectra(0.4, 0.4, 0.4);
 const leafReflectance = new Rad.Spectra(0.8, 0.8, 0.8);
 
-export async function load(filepath) {
+export async function load(filepath, isTree = true) {
   const tree = await getObject(filepath);
-  // console.log(tree);
 
   let surfaces = [];
 
-  // for (let i = 0; i < 200; i++) {
-  //   const object = createBranch(tree.branches[i]);
-  //   surfaces = surfaces.concat(object.surfaces);
-  // }
-
-  for (const branch of tree.branches) {
-    if (branch.width > 0.8) {
-      const object = createBranch(branch);
-      surfaces = surfaces.concat(object.surfaces);
+  if (isTree) {
+    let b = 0;
+    while (b < tree.branches.length) {
+      if (tree.branches[b].width > 0.8) {
+        const object = createBranch(tree.branches[b]);
+        surfaces = surfaces.concat(object.surfaces);
+      }
+      b++;
     }
   }
 
-  for (const leaf of tree.leaves) {
-    const objects = createLeaf(leaf);
-    for (const object of objects) {
-      if (object) {
-        surfaces = surfaces.concat(object.surfaces);
+  let l = 0;
+  while (l < tree.leaves.length) {
+    const objects = createLeaf(tree.leaves[l]);
+    let o = 0;
+    while (o < objects.length) {
+      if (objects[o]) {
+        surfaces = surfaces.concat(objects[o].surfaces);
       }
+      o++;
     }
+    l++;
   }
 
   return new Rad.Instance(surfaces);
@@ -60,18 +62,15 @@ function createBranch(branch) {
   const retVal = Tri.makePrism(branchReflectance, new Rad.Spectra(0, 0, 0));
 
   // Add reflectance values
-  for (let i = 0; i < retVal.surfaces.length; i++) {
-    retVal.surfaces[i].reflectance.add(branchReflectance);
+  let s = 0;
+  while (s < retVal.surfaces.length) {
+    retVal.surfaces[s].reflectance.add(branchReflectance);
+    s++;
   }
-
-  // Scale rotations
-  // branch.rotation.x = branch.rotation.x;
-  // branch.rotation.y = branch.rotation.y;
-  // branch.rotation.z = branch.rotation.z;
 
   const xForm = new Transform3();
   // Place on x,y centre
-  //xForm.translate(-0.5, -0.5, 0);
+  xForm.translate(-0.5, -0.5, 0);
   xForm.scale(branch.width, branch.width, branch.length);
   xForm.rotate(branch.rotation.x, 0, branch.rotation.z);
   xForm.translate(branch.start.x, branch.start.y, branch.start.z);

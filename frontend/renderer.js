@@ -15,11 +15,11 @@ export const viewParameters = {
   viewOutput: new components.Toggle('view radiosity output', false),
 
   // global camera sees light as it reaches surfaces, local camera waits for the light to reach the camera
-  viewGlobalCamera: new components.Toggle('global camera', true),
+  viewGlobalCamera: new components.Toggle('global camera', false),
 
   viewWireframe: new components.Toggle('wireframe view', false),
   includeAmbient: new components.Toggle('show ambient light', false),
-  gamma: new components.Range('gamma', 1, 100, 22), // scaled by 10, so 0.1-10, default 2.2
+  gamma: new components.Range('gamma', 1, 100, 35), // scaled by 10, so 0.1-10, default 2.2
   exposure: new components.Range('exposure', -50, 50, 0), // exposure factor is 1.1^(exposure/10)
 };
 
@@ -47,7 +47,6 @@ export function setup() {
   document.body.append(renderer.domElement);
 
   camera = new THREE.PerspectiveCamera(100, 1, 0.1, 1000);
-  //camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 1, 1000 );
 
   // Create camera object for flight cam and camera helper
   flightCam = new THREE.PerspectiveCamera(84, window.innerWidth / window.innerHeight, 0.01, 1000);
@@ -251,7 +250,7 @@ function animate() {
   flightCam.position.y = z;
   flightCam.position.z = -y;
 
-  const [lookX, lookY, lookZ] = flightPath(currentStep + 2)
+  const [lookX, lookY, lookZ] = flightPath(currentStep + 2);
   flightCam.lookAt(lookX, lookZ, -lookY);
 
   if (camToggle.dataset.enabled) {
@@ -269,11 +268,11 @@ export function resetFlight() {
 }
 
 export function getCameraPosition() {
-    if (camToggle.dataset.enabled) {
-        return flightCam.position;
-    } else {
-        return camera.position;
-    }
+  if (camToggle.dataset.enabled) {
+    return flightCam.position;
+  } else {
+    return camera.position;
+  }
 }
 
 export function displayGamma(gamma) {

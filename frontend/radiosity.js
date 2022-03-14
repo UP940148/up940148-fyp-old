@@ -6,7 +6,7 @@ import { burstingDelay } from './tools/delays.js';
 
 let environment;
 
-export function open(env) {
+export function open(env, name) {
   environment = env;
 
   if (!env) {
@@ -23,7 +23,7 @@ export function open(env) {
   stats.set('iteration-count', '?');
 
   const alg = algorithms.value.instance; // Gets the type of radiosity (SlowRad/ProgRad1/ProgRad2)
-  bufferingIterator = alg.open(env); // Env is current environment object
+  bufferingIterator = alg.open(env, name); // Env is current environment object
   // BufferingIterator is generator created from env object
 
   animationControls.setMaxTime(alg.maxTime);
@@ -45,18 +45,17 @@ let bufferingIterator = null;
 
 async function startBuffering() {
   if (bufferingRunning) return; // already running, will pick up the new iterator automatically
-
   try {
     bufferingRunning = true;
 
-    let next = bufferingIterator.next();
+    let next = await bufferingIterator.next();
     while (!next.done) {
       updateBufTime(next.value);
 
       await burstingDelay();
       if (!bufferingIterator) break;
 
-      next = bufferingIterator.next();
+      next = await bufferingIterator.next();
     }
   } finally {
     console.log(performance.now());

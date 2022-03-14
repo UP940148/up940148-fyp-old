@@ -19,7 +19,7 @@ camToggle.addEventListener('click', () => {
   } else {
     camToggle.setAttribute('data-enabled', true);
   }
-})
+});
 
 const takePic = document.getElementById('image-capture');
 takePic.addEventListener('click', () => {
@@ -35,7 +35,7 @@ takePic.addEventListener('click', () => {
     // Click link to download image
     link.click();
   }, 'image/png');
-})
+});
 
 function init() {
   renderer.setup();
@@ -45,10 +45,10 @@ function init() {
   environments.setup(); // calls changeEnvironment with the default one
 }
 
-function changeEnvironment(environment) {
+function changeEnvironment(environment, name) {
   renderer.viewParameters.viewOutput.setTo(false);
   renderer.showEnvironment(environment);
-  radiosity.open(environment);
+  radiosity.open(environment, name);
 }
 
 function setupUI() {

@@ -12,7 +12,7 @@ const defaultReflectance = new Rad.Spectra(0.5, 0.5, 0.5);
 const defaultEmittance = new Rad.Spectra(0, 0, 0);
 const planeLightReflectance = new Rad.Spectra(0, 0, 0);
 const planeLightEmittance = new Rad.Spectra(100, 100, 100);
-const floorReflectance = new Rad.Spectra(0.01, 0.01, 0.01);
+const floorReflectance = new Rad.Spectra(0.0001, 0.0001, 0.0001);
 
 const defaultCubeReflectance = [
   defaultReflectance,
@@ -49,11 +49,11 @@ const cubeLightEmittance = [
 
 // Create a room with a light
 export default async function createScene() {
-  const tree1 = await TreeLoader.load('../modeling/trees/tree.json');
-  const treexForm = new Transform3();
-  treexForm.scale(0.2, 0.2, 0.2);
-  treexForm.translate(0, 22, 0);
-  treexForm.transform(tree1);
+  // const tree1 = await TreeLoader.load('../modeling/trees/tree.json');
+  // const treexForm = new Transform3();
+  // treexForm.scale(0.2, 0.2, 0.2);
+  // treexForm.translate(0, 22, 0);
+  // treexForm.transform(tree1);
 
   /*
     Co-ordinates in relation to environment:
@@ -101,17 +101,17 @@ export default async function createScene() {
   b1x.scale(2, 2, 2);
   b1x.transform(box1);
 
-  const objects = [floor, tree1];
+  const objects = [floor];
 
   for (let i = 0; i < 3; i++) {
-    const obj1 = makeCube();
-    const obj2 = makeCube();
+    const obj1 = await TreeLoader.load('../modeling/trees/r30N2000.json');
+    const obj2 = await TreeLoader.load('../modeling/trees/r30N2000.json');
     const [x, y, z] = flightPath(1000 / 3 * i);
     const tx1 = new Transform3();
     const tx2 = new Transform3();
 
-    tx1.scale(1, 1, 7);
-    tx2.scale(1, 1, 8);
+    tx1.scale(0.15, 0.15, 0.2);
+    tx2.scale(0.2, 0.2, 0.25);
 
     tx1.translate(3 * x / 4, 3 * y / 4, 0);
     tx2.translate(5 * x / 4, 5 * y / 4, 0);
@@ -123,20 +123,15 @@ export default async function createScene() {
     objects.push(obj2);
   }
 
-/*
-  Skip STL
-  Ignore branches
-*/
-
   // Create circle of lights
-  const numLights = 5;
+  const numLights = 10;
   const timeDiff = 1000 / numLights;
   for (let i = 0; i < numLights; i++) {
     const obj = makeCube(cubeLightReflectance, cubeLightEmittance);
     const transform = new Transform3();
     // Center on 0, 0
     transform.translate(-0.5, -0.5, -0.5);
-    transform.scale(0.2, 0.2, 0.2)
+    transform.scale(0.2, 0.2, 0.2);
     // const rotateZ = i * (360 / numLights); // Set position around unit circle
     const [x, y, z] = flightPath(i * timeDiff);
     // transform.rotate(45, 0, rotateZ);

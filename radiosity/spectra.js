@@ -7,6 +7,10 @@ export default class Spectra {
       this.b = r.b;
     } else if (r == null) {
       this.r = this.g = this.b = 0;
+    } else if (Array.isArray(r) && r.length === 3) {
+      this.r = r[0];
+      this.g = r[1];
+      this.b = r[2];
     } else {
       this.r = r;
       this.g = g;

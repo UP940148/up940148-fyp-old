@@ -29,12 +29,12 @@ const environmentsList = [
   //   name: 'Main Scene',
   // },
   {
-    f: tree,
-    name: 'Tree',
-  },
-  {
     f: lenniesRoom2,
     name: 'Testing Scene',
+  },
+  {
+    f: tree,
+    name: 'Tree',
   },
   {
     f: test1,
@@ -84,12 +84,13 @@ export const selector = new components.Selector('environment', environmentsList)
 
 async function createEnvironment() {
   const environment = await selector.value.f();
+  const name = await selector.value.name;
 
   if (!environment.checkNoVerticesAreShared()) {
     console.warn(`environment ${selector.value.name} has vertices shared between surfaces and it should not!`);
   }
 
-  if (listener) listener(environment);
+  if (listener) listener(environment, name);
 }
 
 
