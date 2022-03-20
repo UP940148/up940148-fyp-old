@@ -1,4 +1,4 @@
-export function toJSON(tree = [], leaves = []) {
+export function toJSON(tree = [], leaves = [], scale) {
   const retval = {
     branches: [],
     leaves: [],
@@ -13,14 +13,14 @@ export function toJSON(tree = [], leaves = []) {
 
   // generate leaves
   for (const leaf of leaves) {
-    retval.leaves.push(jsonLeaf(leaf));
+    retval.leaves.push(jsonLeaf(leaf, scale));
   }
 
   return JSON.stringify(retval);
 }
 
 
-function jsonLeaf(p) {
+function jsonLeaf(p, scale) {
   if (p.prev == null) return '';
 
   const v = p.minus(p.prev);
@@ -39,6 +39,7 @@ function jsonLeaf(p) {
       y: 50,
       z: a,
     },
+    scale: scale,
   };
 }
 

@@ -74,27 +74,6 @@ export default async function createScene() {
   floorxForm.scale(100, 100, 1);
   floorxForm.transform(floor);
 
-
-  /*
-  const customEmit = [
-      new Rad.Spectra(0.0001, 0.0001, 0.0001),
-      new Rad.Spectra(0.0001, 0.0001, 0.0001),
-      new Rad.Spectra(0.0001, 0.0001, 0.0001),
-      new Rad.Spectra(0.0001, 0.0001, 0.0001),
-      new Rad.Spectra(0.0001, 0.0001, 0.0001),
-      new Rad.Spectra(0.0001, 0.0001, 0.0001),
-  ];
-
-  const rainbow = [
-    new Rad.Spectra(183, 18, 52), // Front
-    new Rad.Spectra(255, 88, 0), // Back
-    new Rad.Spectra(0, 155, 72), // Right
-    new Rad.Spectra(0, 70, 173), // Left
-    new Rad.Spectra(255, 255, 255), // Top
-    new Rad.Spectra(255, 213, 0), // Bottom
-  ]
-  */
-
   const box1 = makeCube(); // defaultCubeReflectance, customEmit);
   const b1x = new Transform3();
   b1x.translate(-0.5, -0.5, 0);
@@ -104,8 +83,8 @@ export default async function createScene() {
   const objects = [floor];
 
   for (let i = 0; i < 3; i++) {
-    const obj1 = await TreeLoader.load('../modeling/trees/r30N2000.json');
-    const obj2 = await TreeLoader.load('../modeling/trees/r30N2000.json');
+    const obj1 = await TreeLoader.load('../modeling/trees/tree.json');
+    const obj2 = await TreeLoader.load('../modeling/trees/tree.json');
     const [x, y, z] = flightPath(1000 / 3 * i);
     const tx1 = new Transform3();
     const tx2 = new Transform3();

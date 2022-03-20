@@ -16,10 +16,10 @@ import * as shapes from './shapes.js';
 import { P } from './point.js';
 
 function main() {
-  const r = 10;
-  const trunk = 0;
+  const r = 30;
+  const trunk = 15;
 
-  const N = 1000;
+  const N = 2000;
   const hollowing = shapes.randomHollowing; // makes the generated sphere or half-sphere less dense inside
 
   const points = shapes.hollowSphereAttractionPoints(N, r, P(0, 0, trunk + r), hollowing);
@@ -37,7 +37,7 @@ function main() {
   });
 
   const leaves = trees.selectLeaves(tree);
-  console.log(output.toJSON(tree, leaves));
+  console.log(output.toJSON(tree, leaves, r / 60));
 }
 
 main();

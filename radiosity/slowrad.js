@@ -1,6 +1,7 @@
 import HemiCube from './hemicube.js';
 import Spectra from './spectra.js';
 import Point3 from './point3.js';
+import * as ArrayScaling from './array-scaling.js';
 
 export default class SlowRad {
   constructor(maxTime = 1000) {
@@ -238,40 +239,9 @@ export default class SlowRad {
     let curr = 0;
     yield { curr, max };
     // Load data from file
-    let data = this.loadFromArrays(scene);
+    const data = await this.loadFromArrays(scene);
 
-    const patches = this.env.patches;
-    let cp = 0;
-    while (cp < patches.length) {
-      curr++;
-      this.computeDistArray(patches[cp]);
-      this.computeRFFArray(patches[cp]);
-      yield { curr, max };
-      cp++;
-    }
-
-    data = await data;
-    console.log(data);
-
-    // If data exists, check if data matches current scene setup
-    let equivalent = false;
     if (data) {
-      data.dist[0].speedOfLight = this.speedOfLight;
-      let p = 0;
-      equivalent = true;
-      while (p < patches.length && equivalent) {
-        let i = 0;
-        while (i < patches[p].distArray.length && equivalent) {
-          if (patches[p].distArray[i] !== data.dist[p][i]) {
-            equivalent = false;
-          }
-          i++;
-        }
-        p++;
-      }
-    }
-
-    if (equivalent) {
       // If data from file is a match for the scene, then load exitances
       console.log('Loading');
       const vertices = this.env.vertices;
@@ -280,7 +250,8 @@ export default class SlowRad {
         const exitances = data.exitance[v];
         this.now = 0;
         while (this.now < this.maxTime) {
-          const exitance = new Spectra(exitances[this.now]);
+          const level = exitances[this.now];
+          const exitance = new Spectra(level, level, level);
           vertices[v].futureExitances[this.now] = exitance;
           this.now++;
         }
@@ -288,6 +259,15 @@ export default class SlowRad {
         v++;
       }
     } else {
+      const patches = this.env.patches;
+      let cp = 0;
+      while (cp < patches.length) {
+        curr++;
+        this.computeDistArray(patches[cp]);
+        this.computeRFFArray(patches[cp]);
+        yield { curr, max };
+        cp++;
+      }
       // If data isn't a match, compute exitances
       console.log('Computing');
       while (!this.calculate()) {
@@ -300,26 +280,34 @@ export default class SlowRad {
 
   async loadFromArrays(name) {
     try {
-      const response = await fetch(`../modeling/test-models/${name}-Arrays.json`);
-      const data = response.json();
+      const myHeaders = new Headers();
+      myHeaders.append('pragma', 'no-cache');
+      myHeaders.append('cache-control', 'no-cache');
+      const myInit = {
+        method: 'GET',
+        headers: myHeaders,
+      };
+      const response = await fetch(`../modeling/test-models/${name}-Arrays.json`, myInit);
+      const data = await response.json();
+      // let d = 0;
+      // while (d < data.dist.length) {
+      //   data.dist[d] = ArrayScaling.expand(data.dist[d]);
+      //   d++;
+      // }
+
+      let e = 0;
+      while (e < data.exitance.length) {
+        data.exitance[e] = ArrayScaling.expand(data.exitance[e]);
+        e++;
+      }
       return data;
     } catch (err) {
+      console.log(err);
       return undefined;
     }
   }
 
   saveArrays(name) {
-    const patches = this.env.patches;
-    const dist = [];
-    const rff = [];
-    let cp = 0;
-    while (cp < patches.length) {
-      dist.push(patches[cp].distArray);
-      rff.push(patches[cp].rffArray);
-      cp++;
-    }
-    dist.speedOfLight = this.speedOfLight;
-
     const vertices = this.env.vertices;
     const exitance = [];
     let v = 0;
@@ -327,22 +315,23 @@ export default class SlowRad {
       const vertEntry = [];
       let t = 0;
       while (t < this.maxTime) {
-        const entry = [];
-        entry.push(vertices[v].futureExitances[t].r);
-        entry.push(vertices[v].futureExitances[t].g);
-        entry.push(vertices[v].futureExitances[t].b);
-        vertEntry.push(entry);
+        vertEntry.push(vertices[v].futureExitances[t].r);
         t++;
       }
       exitance.push(vertEntry);
       v++;
     }
 
+    let e = 0;
+    while (e < exitance.length) {
+      exitance[e] = ArrayScaling.shrink(exitance[e]);
+      e++;
+    }
+
     const output = {
-      dist: dist,
-      rff: rff,
       exitance: exitance,
     };
+
 
     const json = JSON.stringify(output);
     const blob = new Blob([json], { type: 'text/plain;charset=utf-8' });

@@ -91,6 +91,7 @@ function createLeaf(leaf) {
 
   const xForm = new Transform3();
   xForm.scale(12, 8, 1);
+  xForm.scale(leaf.scale, leaf.scale, 1);
   xForm.rotate(leaf.rotation.x, leaf.rotation.y, leaf.rotation.z);
   xForm.translate(leaf.translation.x, leaf.translation.y, leaf.translation.z);
   xForm.transform(original);
