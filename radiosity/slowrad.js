@@ -291,20 +291,20 @@ export default class SlowRad {
         method: 'GET',
         headers: myHeaders,
       };
-      let data;
-      try {
-        const response = await fetch(`../modeling/test-models/${name}-Arrays.json`, myInit);
-        data = await response.json();
-      } catch {
-        data = await import(`../modeling/test-models/${name}-Arrays.json`, { assert: { type: 'json' } });
-      } finally {
-        let e = 0;
-        while (e < data.exitance.length) {
-          data.exitance[e] = ArrayScaling.expand(data.exitance[e]);
-          e++;
-        }
-        return data;
+      const response = await fetch(`../modeling/test-models/${name}-Arrays.json`, myInit);
+      const data = await response.json();
+      // let d = 0;
+      // while (d < data.dist.length) {
+      //   data.dist[d] = ArrayScaling.expand(data.dist[d]);
+      //   d++;
+      // }
+
+      let e = 0;
+      while (e < data.exitance.length) {
+        data.exitance[e] = ArrayScaling.expand(data.exitance[e]);
+        e++;
       }
+      return data;
     } catch (err) {
       return undefined;
     }
