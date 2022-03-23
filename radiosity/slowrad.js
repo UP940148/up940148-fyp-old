@@ -239,11 +239,14 @@ export default class SlowRad {
     let curr = 0;
     yield { curr, max };
     // Load data from file
-    const data = await this.loadFromArrays(scene);
+    let data;
+    if (typeof window !== 'undefined') {
+      data = await this.loadFromArrays(scene);
+    }
+
 
     if (data) {
       // If data from file is a match for the scene, then load exitances
-      console.log('Loading');
       const vertices = this.env.vertices;
       let v = 0;
       while (v < vertices.length) {
@@ -269,12 +272,13 @@ export default class SlowRad {
         cp++;
       }
       // If data isn't a match, compute exitances
-      console.log('Computing');
       while (!this.calculate()) {
         yield { curr: this.now, max: this.maxTime };
       }
       // Once computing is done, save data
-      this.saveArrays(scene);
+      if (typeof window === 'undefined') {
+        this.saveArrays(scene);
+      }
     }
   }
 
@@ -302,7 +306,6 @@ export default class SlowRad {
       }
       return data;
     } catch (err) {
-      console.log(err);
       return undefined;
     }
   }
@@ -332,12 +335,15 @@ export default class SlowRad {
       exitance: exitance,
     };
 
-
     const json = JSON.stringify(output);
+
+    console.log(json);
+    /*
     const blob = new Blob([json], { type: 'text/plain;charset=utf-8' });
     const link = document.createElement('a');
     link.download = `${name}-Arrays.json`;
     link.href = URL.createObjectURL(blob);
     link.click();
+    */
   }
 }

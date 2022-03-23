@@ -16,8 +16,8 @@ import * as shapes from './shapes.js';
 import { P } from './point.js';
 
 function main() {
-  const r = 30;
-  const trunk = 15;
+  const r = 20;
+  const trunk = 10;
 
   const N = 2000;
   const hollowing = shapes.randomHollowing; // makes the generated sphere or half-sphere less dense inside

@@ -44,7 +44,7 @@ export default class Environment {
         maxX = Math.max(maxX, this.instances[i].vertices[v].pos.x);
         maxY = Math.max(maxY, this.instances[i].vertices[v].pos.y);
         maxZ = Math.max(maxZ, this.instances[i].vertices[v].pos.z);
-        v++
+        v++;
       }
       i++;
     }
