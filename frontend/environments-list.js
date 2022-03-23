@@ -36,6 +36,7 @@ export const environmentsList = [
   {
     f: lenniesRoom2,
     name: 'Testing Scene',
+    id: 'testing-scene',
   },
   {
     f: tree,
