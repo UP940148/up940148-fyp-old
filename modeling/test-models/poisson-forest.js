@@ -1,4 +1,3 @@
-// import fetch from 'node-fetch';
 import { loadSTL } from '../stl-loader.js';
 import { flightPath } from '../path.js';
 import * as Rad from '../../radiosity/index.js';
@@ -7,6 +6,8 @@ import * as Cube from '../cube.js';
 import * as Plane from '../singleface.js';
 import * as Cylinder from '../cylinder.js';
 import * as TreeLoader from '../json-tree-loader.js';
+let retrieve;
+
 
 const defaultReflectance = new Rad.Spectra(0.5, 0.5, 0.5);
 const defaultEmittance = new Rad.Spectra(0, 0, 0);
@@ -48,6 +49,10 @@ const cubeLightEmittance = [
 ]
 
 export default async function createScene() {
+  if (typeof window === 'undefined') {
+    retrieve = await import('../retrieve-json-file.js');
+    retrieve = retrieve.default;
+  }
   const floor = makePlane(floorReflectance, defaultEmittance, 32);
   const floorxForm = new Transform3();
   floorxForm.translate(-0.5, -0.5, 0);
@@ -57,23 +62,15 @@ export default async function createScene() {
   const objects = [floor];
 
   let treeData;
-  let isCLI = false;
   try {
     const treeResponse = await fetch('../modeling/test-models/poisson-tree-samples.json');
     treeData = await treeResponse.json();
   } catch {
-    treeData = await import('./poisson-tree-samples.json', { assert: { type: 'json' } }); // eslint-disable-line
-    treeData = treeData.default;
-    isCLI = true;
+    treeData = retrieve('../modeling/test-models/poisson-tree-samples.json');
   } finally {
     let t = 0;
     while (t < treeData.length) {
-      let tree;
-      if (isCLI) {
-        tree = await TreeLoader.load('./trees/r20N2000.json', true);
-      } else {
-        tree = await TreeLoader.load('../modeling/trees/r20N2000.json', true);
-      }
+      const tree = await TreeLoader.load('../modeling/trees/r20N2000.json', true);
       // const tree = makeCube(cubeLightReflectance, cubeLightEmittance);
       const transform = new Transform3();
       // Center on 0, 0
@@ -93,17 +90,11 @@ export default async function createScene() {
     const shrubResponse = await fetch('../modeling/test-models/poisson-shrub-samples.json');
     shrubData = await shrubResponse.json();
   } catch {
-    shrubData = await import('./poisson-shrub-samples.json', { assert: { type: 'json' } });
-    shrubData = shrubData.default;
+    shrubData = retrieve('../modeling/test-models/poisson-shrub-samples.json');
   } finally {
     let s = 0;
     while (s < shrubData.length) {
-      let shrub;
-      if (isCLI) {
-        shrub = await TreeLoader.load('./trees/shrub0.json', false);
-      } else {
-        shrub = await TreeLoader.load('../modeling/trees/shrub0.json', false);
-      }
+      const shrub = await TreeLoader.load('../modeling/trees/shrub0.json', false);
       // const tree = makeCube(cubeLightReflectance, cubeLightEmittance);
       const transform = new Transform3();
       // Center on 0, 0

@@ -1,4 +1,3 @@
-// import fetch from 'node-fetch';
 import * as Rad from '../radiosity/index.js';
 import Transform3 from './transform3.js';
 import * as Cube from './cube.js';
@@ -16,6 +15,7 @@ export async function load(filepath, isTree = true, colour = false) {
     leafReflectance = new Rad.Spectra(0.2118, 0.4510, 0.1882);
   }
   const tree = await getObject(filepath);
+  // console.log(tree);
 
   let surfaces = [];
 
@@ -54,8 +54,8 @@ async function getObject(file) {
 
     obj = await response.json();
   } catch {
-    obj = await import(file, { assert: { type: 'json' } });
-    obj = obj.default;
+    const { default: retrieve } = await import('./retrieve-json-file.js');
+    obj = retrieve(file);
   }
 
 
